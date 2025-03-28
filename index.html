@@ -3,28 +3,28 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Hospital Management System</title>
+    <title>MediSync HMS</title>
     <style>
       :root {
-        --bg-primary: #ffffff;
-        --bg-secondary: #f3f4f6;
-        --text-primary: #111827;
-        --text-secondary: #4b5563;
-        --primary-color: #2196f3;
-        --success-color: #4caf50;
-        --warning-color: #ffc107;
-        --danger-color: #f44336;
-        --border-color: #e5e7eb;
-        --shadow-color: rgba(0, 0, 0, 0.1);
-      }
-
-      [data-theme="dark"] {
         --bg-primary: #0a0a0a;
         --bg-secondary: #141414;
         --text-primary: #ffffff;
         --text-secondary: #a1a1a1;
         --border-color: #2a2a2a;
         --shadow-color: rgba(0, 0, 0, 0.3);
+        --primary-color: #2196f3;
+        --success-color: #4caf50;
+        --warning-color: #ffc107;
+        --danger-color: #f44336;
+      }
+
+      [data-theme="dark"] {
+        --bg-primary: #ffffff;
+        --bg-secondary: #f3f4f6;
+        --text-primary: #111827;
+        --text-secondary: #4b5563;
+        --border-color: #e5e7eb;
+        --shadow-color: rgba(0, 0, 0, 0.1);
       }
 
       * {
@@ -77,17 +77,18 @@
       }
 
       .auth-button {
-        padding: 0.75rem 2rem;
-        border-radius: 8px;
+        padding: 1rem 7rem;
+        border-radius: 80px;
         font-weight: 600;
         cursor: pointer;
         transition: transform 0.2s, box-shadow 0.2s;
         border: none;
+        font-size: large;
       }
 
       .auth-button.login {
-        background-color: var(--primary-color);
-        color: white;
+        background-color: var(--text-primary);
+        color: var(--bg-primary);
       }
 
       .auth-button.register {
@@ -98,7 +99,7 @@
 
       .auth-button:hover {
         transform: translateY(-2px);
-        box-shadow: 0 4px 12px var(--shadow-color);
+        box-shadow: 0 1px 10px var(--text-primary);
       }
 
       .hero {
@@ -108,7 +109,9 @@
         align-items: center;
         justify-content: center;
         text-align: center;
-        padding: 2rem;
+        padding: 1rem;
+        padding-top: 4rem;
+        padding-bottom: 3rem;
       }
 
       .hero h1 {
@@ -121,14 +124,14 @@
         font-size: 1.2rem;
         color: var(--text-secondary);
         max-width: 800px;
-        margin: 0 auto 2rem;
+        margin: 0 auto 4rem;
       }
 
       .section-title {
         text-align: center;
         font-size: 2.5rem;
         margin-bottom: 2rem;
-        padding-top: 2rem;
+        padding-top: 1rem;
       }
 
       .card-grid {
@@ -137,12 +140,12 @@
         gap: 2rem;
         max-width: 1400px;
         margin: 0 auto;
-        padding: 2rem;
+        padding: 1rem;
       }
 
       .card {
         background-color: var(--bg-secondary);
-        padding: 2rem;
+        padding: 1rem;
         border-radius: 12px;
         border: 1px solid var(--border-color);
         text-align: left;
@@ -150,8 +153,8 @@
       }
 
       .card:hover {
-        transform: translateY(-8px);
-        box-shadow: 0 12px 24px var(--shadow-color);
+        transform: translateY(-2px);
+        box-shadow: 0 1px 10px var(--text-primary);
       }
 
       .card h3 {
@@ -235,6 +238,19 @@
   </head>
   <body>
     <!-- Theme Toggle Button -->
+    <br />
+    <span
+      style="
+        text-align: left;
+        font-size: 1.5rem;
+        font-weight: bold;
+        padding-left: 1.5rem;
+        color: white;
+        margin-top: -10px;
+        display: inline-block;
+      "
+      >MediSync HMS</span
+    >
     <button
       class="theme-toggle"
       onclick="toggleTheme()"
@@ -258,9 +274,14 @@
           Advanced healthcare management solution providing real-time monitoring
           of hospital resources and seamless patient care coordination.
         </p>
+
         <div class="auth-buttons">
-          <button class="auth-button login">Login</button>
-          <button class="auth-button register">Register</button>
+          <a href="pages\login.html">
+            <button class="auth-button login">Login</button>
+          </a>
+          <a href="pages\register.html">
+            <button class="auth-button register">Register</button>
+          </a>
         </div>
       </section>
 
@@ -321,7 +342,7 @@
         </div>
       </section>
 
-      <section>
+      <section style="padding-top: 1rem">
         <h2 class="section-title">Hospital Statistics</h2>
         <div class="card-grid">
           <div class="card">
@@ -367,7 +388,9 @@
       </section>
 
       <section>
-        <h2 class="section-title">Special Facilities</h2>
+        <h2 class="section-title" style="padding-top: 1rem">
+          Special Facilities
+        </h2>
         <div class="card-grid">
           <div class="card">
             <h3>Diagnostic Center</h3>
@@ -414,6 +437,7 @@
           </div>
         </div>
       </section>
+      <br /><br />
     </main>
 
     <script>
