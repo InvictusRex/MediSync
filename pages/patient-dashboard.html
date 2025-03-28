@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HMS - Patient Dashboard</title>
+    <link rel="stylesheet" href="../assets/css/style.css" />
+    <link rel="stylesheet" href="../assets/css/dashboard.css" />
+  </head>
+  <body>
+    <div class="dashboard-container">
+      <aside class="sidebar">
+        <div class="sidebar-header">
+          <h2>HMS Patient</h2>
+        </div>
+
+        <div class="user-info">
+          <div class="user-avatar">P</div>
+          <h3>Alice Johnson</h3>
+          <p>Patient ID: P12345</p>
+        </div>
+
+        <ul class="nav-menu">
+          <li><a href="#" class="active">Dashboard</a></li>
+          <li><a href="#appointments">My Appointments</a></li>
+          <li><a href="#doctors">Find Doctors</a></li>
+          <li><a href="#medical-history">Medical History</a></li>
+          <li><a href="#profile">Profile</a></li>
+          <li><a href="../index.html">Logout</a></li>
+        </ul>
+      </aside>
+
+      <main class="main-content">
+        <div class="dashboard-header">
+          <h1 class="dashboard-title">Patient Dashboard</h1>
+          <button class="btn-primary" data-modal="bookAppointmentModal">
+            Book Appointment
+          </button>
+        </div>
+
+        <div class="dashboard-cards">
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">Upcoming Appointments</h3>
+            </div>
+            <div class="card-body">
+              <h2>2</h2>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">Prescriptions</h3>
+            </div>
+            <div class="card-body">
+              <h2>3</h2>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">Lab Reports</h3>
+            </div>
+            <div class="card-body">
+              <h2>5</h2>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Recent Medical History</h3>
+          </div>
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Doctor</th>
+                  <th>Diagnosis</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>2025-03-20</td>
+                  <td>Dr. John Smith</td>
+                  <td>Regular Checkup</td>
+                  <td>
+                    <button class="btn-primary" data-modal="viewHistoryModal">
+                      View Details
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- Book Appointment Modal -->
+    <div class="modal" id="bookAppointmentModal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>Book Appointment</h2>
+          <button class="close-modal">&times;</button>
+        </div>
+        <form id="appointmentForm">
+          <div class="form-group">
+            <label for="department">Department</label>
+            <select id="department" required>
+              <option value="">Select Department</option>
+              <option value="cardiology">Cardiology</option>
+              <option value="neurology">Neurology</option>
+              <option value="orthopedics">Orthopedics</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="doctor">Doctor</label>
+            <select id="doctor" required>
+              <option value="">Select Doctor</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="appointmentDate">Date</label>
+            <input type="date" id="appointmentDate" required />
+          </div>
+          <div class="form-group">
+            <label for="appointmentTime">Time</label>
+            <select id="appointmentTime" required>
+              <option value="">Select Time</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="reason">Reason for Visit</label>
+            <textarea id="reason" rows="3" required></textarea>
+          </div>
+          <button type="submit" class="btn-primary">Book Appointment</button>
+        </form>
+      </div>
+    </div>
+
+    <script src="../assets/js/darkMode.js"></script>
+    <script src="../assets/js/dashboard.js"></script>
+    <script src="../assets/js/appointment.js"></script>
+  </body>
+</html>

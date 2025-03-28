@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HMS - Admin Dashboard</title>
+    <link rel="stylesheet" href="../assets/css/style.css" />
+    <link rel="stylesheet" href="../assets/css/dashboard.css" />
+  </head>
+  <body>
+    <div class="dashboard-container">
+      <aside class="sidebar">
+        <div class="sidebar-header">
+          <h2>HMS Admin</h2>
+        </div>
+
+        <div class="user-info">
+          <div class="user-avatar">A</div>
+          <h3>Admin</h3>
+          <p>admin@hospital.com</p>
+        </div>
+
+        <ul class="nav-menu">
+          <li><a href="#" class="active">Dashboard</a></li>
+          <li><a href="#doctors">Doctors</a></li>
+          <li><a href="#patients">Patients</a></li>
+          <li><a href="#appointments">Appointments</a></li>
+          <li><a href="#settings">Settings</a></li>
+          <li><a href="../index.html">Logout</a></li>
+        </ul>
+      </aside>
+
+      <main class="main-content">
+        <div class="dashboard-header">
+          <h1 class="dashboard-title">Admin Dashboard</h1>
+          <button class="btn-primary" id="addDoctorBtn">Add New Doctor</button>
+        </div>
+
+        <div class="dashboard-cards">
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">Total Doctors</h3>
+            </div>
+            <div class="card-body">
+              <h2>42</h2>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">Total Patients</h3>
+            </div>
+            <div class="card-body">
+              <h2>156</h2>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">Today's Appointments</h3>
+            </div>
+            <div class="card-body">
+              <h2>28</h2>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Recent Doctors</h3>
+          </div>
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Department</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Dr. John Smith</td>
+                  <td>Cardiology</td>
+                  <td>
+                    <span class="status-badge status-active">Active</span>
+                  </td>
+                  <td>
+                    <button class="btn-primary">Edit</button>
+                    <button class="btn-danger">Remove</button>
+                  </td>
+                </tr>
+                <!-- Add more rows as needed -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- Add Doctor Modal -->
+    <div class="modal" id="addDoctorModal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>Add New Doctor</h2>
+          <button class="close-modal">&times;</button>
+        </div>
+        <form id="addDoctorForm">
+          <div class="form-group">
+            <label for="doctorName">Full Name</label>
+            <input type="text" id="doctorName" required />
+          </div>
+          <div class="form-group">
+            <label for="department">Department</label>
+            <select id="department" required>
+              <option value="">Select Department</option>
+              <option value="cardiology">Cardiology</option>
+              <option value="neurology">Neurology</option>
+              <option value="orthopedics">Orthopedics</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" required />
+          </div>
+          <div class="form-group">
+            <label for="phone">Phone</label>
+            <input type="tel" id="phone" required />
+          </div>
+          <button type="submit" class="btn-primary">Add Doctor</button>
+        </form>
+      </div>
+    </div>
+
+    <script src="../assets/js/darkMode.js"></script>
+    <script src="../assets/js/dashboard.js"></script>
+  </body>
+</html>

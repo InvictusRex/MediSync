@@ -3,184 +3,428 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Welcome to HMS - Hospital Management System</title>
-    <link rel="stylesheet" href="assets/css/style.css" />
+    <title>Hospital Management System</title>
     <style>
-      /* Landing page specific styles */
+      :root {
+        --bg-primary: #ffffff;
+        --bg-secondary: #f3f4f6;
+        --text-primary: #111827;
+        --text-secondary: #4b5563;
+        --primary-color: #2196f3;
+        --success-color: #4caf50;
+        --warning-color: #ffc107;
+        --danger-color: #f44336;
+        --border-color: #e5e7eb;
+        --shadow-color: rgba(0, 0, 0, 0.1);
+      }
+
+      [data-theme="dark"] {
+        --bg-primary: #0a0a0a;
+        --bg-secondary: #141414;
+        --text-primary: #ffffff;
+        --text-secondary: #a1a1a1;
+        --border-color: #2a2a2a;
+        --shadow-color: rgba(0, 0, 0, 0.3);
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          "Helvetica Neue", Arial, sans-serif;
+      }
+
+      body {
+        background-color: var(--bg-primary);
+        color: var(--text-primary);
+        line-height: 1.6;
+        transition: background-color 0.3s, color 0.3s;
+      }
+
+      /* Theme Toggle Button */
+      .theme-toggle {
+        position: fixed;
+        top: 1rem;
+        right: 1rem;
+        background: var(--bg-secondary);
+        border: 1px solid var(--border-color);
+        padding: 0.5rem;
+        border-radius: 50%;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: transform 0.2s;
+      }
+
+      .theme-toggle:hover {
+        transform: scale(1.1);
+      }
+
+      .theme-toggle svg {
+        width: 24px;
+        height: 24px;
+        fill: var(--text-primary);
+      }
+
+      /* Auth Buttons */
+      .auth-buttons {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        margin-top: 2rem;
+      }
+
+      .auth-button {
+        padding: 0.75rem 2rem;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: transform 0.2s, box-shadow 0.2s;
+        border: none;
+      }
+
+      .auth-button.login {
+        background-color: var(--primary-color);
+        color: white;
+      }
+
+      .auth-button.register {
+        background-color: var(--bg-secondary);
+        color: var(--text-primary);
+        border: 2px solid var(--border-color);
+      }
+
+      .auth-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px var(--shadow-color);
+      }
+
       .hero {
-        min-height: 100vh;
-        background: linear-gradient(
-          rgba(33, 150, 243, 0.1),
-          rgba(33, 150, 243, 0.05)
-        );
+        min-height: 50vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
         padding: 2rem;
       }
 
-      .hero-content {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding-top: 100px;
-        text-align: center;
-      }
-
       .hero h1 {
-        font-size: 3rem;
-        margin-bottom: 1.5rem;
-        color: var(--primary-color);
+        font-size: 4rem;
+        margin-bottom: 1rem;
+        line-height: 1.2;
       }
 
       .hero p {
         font-size: 1.2rem;
         color: var(--text-secondary);
+        max-width: 800px;
+        margin: 0 auto 2rem;
+      }
+
+      .section-title {
+        text-align: center;
+        font-size: 2.5rem;
         margin-bottom: 2rem;
-        max-width: 600px;
-        margin-left: auto;
-        margin-right: auto;
+        padding-top: 2rem;
       }
 
-      .cta-buttons {
-        display: flex;
-        gap: 20px;
-        justify-content: center;
-        margin-top: 40px;
+      .card-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 2rem;
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 2rem;
       }
 
-      .cta-buttons .btn-primary {
-        min-width: 150px;
-      }
-
-      .btn-secondary {
+      .card {
         background-color: var(--bg-secondary);
-        color: var(--text-primary);
-        border: 2px solid var(--primary-color);
-        padding: 12px 24px;
-        border-radius: 6px;
-        cursor: pointer;
-        transition: all 0.3s;
+        padding: 2rem;
+        border-radius: 12px;
+        border: 1px solid var(--border-color);
+        text-align: left;
+        transition: transform 0.2s, box-shadow 0.2s;
       }
 
-      .btn-secondary:hover {
-        background-color: var(--primary-color);
+      .card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 12px 24px var(--shadow-color);
+      }
+
+      .card h3 {
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+      }
+
+      .card p {
+        color: var(--text-secondary);
+      }
+
+      .stat-number {
+        font-size: 2.5rem;
+        color: var(--primary-color);
+        margin-bottom: 0.5rem;
+      }
+
+      .status-badge {
+        display: inline-block;
+        padding: 0.3rem 0.8rem;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        margin-left: 1rem;
+      }
+
+      .status-good {
+        background-color: var(--success-color);
         color: white;
       }
 
-      .features {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: 30px;
-        max-width: 1200px;
-        margin: 60px auto;
-        padding: 0 20px;
+      .status-warning {
+        background-color: var(--warning-color);
+        color: black;
       }
 
-      .feature-card {
-        background-color: var(--bg-secondary);
-        padding: 30px;
-        border-radius: 12px;
-        text-align: center;
-        box-shadow: 0 4px 6px var(--shadow-color);
-        transition: transform 0.3s;
+      .status-critical {
+        background-color: var(--danger-color);
+        color: white;
       }
 
-      .feature-card:hover {
-        transform: translateY(-5px);
+      .progress-bar {
+        width: 100%;
+        height: 8px;
+        background-color: var(--border-color);
+        border-radius: 4px;
+        margin: 1rem 0;
+        overflow: hidden;
       }
 
-      .feature-icon {
-        font-size: 2.5rem;
-        margin-bottom: 20px;
-        color: var(--primary-color);
+      .progress-fill {
+        height: 100%;
+        transition: width 0.3s ease;
       }
 
-      .current-time {
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        background-color: var(--bg-secondary);
-        padding: 10px 20px;
-        border-radius: 20px;
-        box-shadow: 0 2px 4px var(--shadow-color);
-        font-size: 0.9rem;
+      ul {
+        list-style: none;
+        margin-top: 1rem;
+      }
+
+      ul li {
         color: var(--text-secondary);
+        margin-bottom: 0.5rem;
+      }
+
+      @media (max-width: 1200px) {
+        .card-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
       }
 
       @media (max-width: 768px) {
         .hero h1 {
-          font-size: 2rem;
+          font-size: 3rem;
         }
 
-        .cta-buttons {
-          flex-direction: column;
-          align-items: center;
-        }
-
-        .feature-card {
-          margin: 0 20px;
+        .card-grid {
+          grid-template-columns: 1fr;
         }
       }
     </style>
   </head>
   <body>
-    <div class="theme-toggle">
-      <button id="darkModeToggle">
-        <i class="moon">🌙</i>
-        <i class="sun">☀️</i>
-      </button>
-    </div>
+    <!-- Theme Toggle Button -->
+    <button
+      class="theme-toggle"
+      onclick="toggleTheme()"
+      aria-label="Toggle theme"
+    >
+      <svg
+        class="sun-icon"
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+      >
+        <path
+          d="M12 2.25a.75.75 0 01.75.75v2.25a.75.75 0 01-1.5 0V3a.75.75 0 01.75-.75zM7.5 12a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0zM18.894 6.166a.75.75 0 00-1.06-1.06l-1.591 1.59a.75.75 0 101.06 1.061l1.591-1.59zM21.75 12a.75.75 0 01-.75.75h-2.25a.75.75 0 010-1.5H21a.75.75 0 01.75.75zM17.834 18.894a.75.75 0 001.06-1.06l-1.59-1.591a.75.75 0 10-1.061 1.06l1.59 1.591zM12 18a.75.75 0 01.75.75V21a.75.75 0 01-1.5 0v-2.25A.75.75 0 0112 18zM7.758 17.303a.75.75 0 00-1.061-1.06l-1.591 1.59a.75.75 0 001.06 1.061l1.591-1.59zM6 12a.75.75 0 01-.75.75H3a.75.75 0 010-1.5h2.25A.75.75 0 016 12zM6.697 7.757a.75.75 0 001.06-1.06l-1.59-1.591a.75.75 0 00-1.061 1.06l1.59 1.591z"
+        />
+      </svg>
+    </button>
 
-    <main class="hero">
-      <div class="hero-content">
+    <main>
+      <section class="hero">
         <h1>Hospital Management System</h1>
         <p>
-          A modern, efficient solution for managing healthcare services.
-          Streamline patient care, appointments, and medical records with our
-          comprehensive system.
+          Advanced healthcare management solution providing real-time monitoring
+          of hospital resources and seamless patient care coordination.
         </p>
-
-        <div class="cta-buttons">
-          <a href="pages/login.html" class="btn-primary">Login</a>
-          <a href="pages/register.html" class="btn-secondary"
-            >Register as Patient</a
-          >
+        <div class="auth-buttons">
+          <button class="auth-button login">Login</button>
+          <button class="auth-button register">Register</button>
         </div>
+      </section>
 
-        <div class="features">
-          <div class="feature-card">
-            <div class="feature-icon">👨‍⚕️</div>
-            <h3>Doctor Management</h3>
-            <p>Efficiently manage doctor schedules and patient appointments</p>
+      <section>
+        <h2 class="section-title">Real-Time Bed Availability</h2>
+        <div class="card-grid">
+          <div class="card">
+            <h3>ICU Beds</h3>
+            <div class="stat-number">15/20</div>
+            <span class="status-badge status-warning">75% Occupied</span>
+            <div class="progress-bar">
+              <div
+                class="progress-fill"
+                style="width: 75%; background-color: var(--warning-color)"
+              ></div>
+            </div>
+            <p>Advanced life support facilities available</p>
           </div>
 
-          <div class="feature-card">
-            <div class="feature-icon">📋</div>
-            <h3>Patient Records</h3>
-            <p>Secure and organized patient medical history management</p>
+          <div class="card">
+            <h3>General Ward</h3>
+            <div class="stat-number">85/100</div>
+            <span class="status-badge status-good">15 Available</span>
+            <div class="progress-bar">
+              <div
+                class="progress-fill"
+                style="width: 85%; background-color: var(--success-color)"
+              ></div>
+            </div>
+            <p>Comfortable accommodation with nursing care</p>
           </div>
 
-          <div class="feature-card">
-            <div class="feature-icon">🗓️</div>
-            <h3>Appointment Booking</h3>
-            <p>Easy and quick appointment scheduling system</p>
+          <div class="card">
+            <h3>Special Care Units</h3>
+            <div class="stat-number">28/30</div>
+            <span class="status-badge status-critical">93% Occupied</span>
+            <div class="progress-bar">
+              <div
+                class="progress-fill"
+                style="width: 93%; background-color: var(--danger-color)"
+              ></div>
+            </div>
+            <p>Specialized medical attention and monitoring</p>
+          </div>
+
+          <div class="card">
+            <h3>Emergency Ward</h3>
+            <div class="stat-number">12/25</div>
+            <span class="status-badge status-good">52% Occupied</span>
+            <div class="progress-bar">
+              <div
+                class="progress-fill"
+                style="width: 52%; background-color: var(--success-color)"
+              ></div>
+            </div>
+            <p>24/7 emergency medical services</p>
           </div>
         </div>
-      </div>
+      </section>
 
-      <div class="current-time" id="currentTime">UTC: 2025-03-28 14:24:44</div>
+      <section>
+        <h2 class="section-title">Hospital Statistics</h2>
+        <div class="card-grid">
+          <div class="card">
+            <div class="stat-number">150+</div>
+            <h3>Qualified Doctors</h3>
+            <ul>
+              <li>42 Specialists</li>
+              <li>68 Consultants</li>
+              <li>40 Residents</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <div class="stat-number">25+</div>
+            <h3>Departments</h3>
+            <ul>
+              <li>12 Major Specialties</li>
+              <li>8 Super Specialties</li>
+              <li>5 Emergency Units</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <div class="stat-number">8</div>
+            <h3>Operation Theaters</h3>
+            <ul>
+              <li>3 Major OTs</li>
+              <li>3 Minor OTs</li>
+              <li>2 Emergency OTs</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <div class="stat-number">20</div>
+            <h3>Ambulances</h3>
+            <ul>
+              <li>12 Basic Life Support</li>
+              <li>8 Advanced Life Support</li>
+              <li>24/7 Availability</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h2 class="section-title">Special Facilities</h2>
+        <div class="card-grid">
+          <div class="card">
+            <h3>Diagnostic Center</h3>
+            <div class="stat-number">12</div>
+            <p>Advanced Labs</p>
+            <ul>
+              <li>MRI & CT Scan</li>
+              <li>Pathology Lab</li>
+              <li>Blood Bank</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <h3>Pharmacy</h3>
+            <div class="stat-number">4</div>
+            <span class="status-badge status-good">24/7</span>
+            <ul>
+              <li>Prescription Drugs</li>
+              <li>Medical Supplies</li>
+              <li>Home Delivery</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <h3>Specialized Clinics</h3>
+            <div class="stat-number">15</div>
+            <p>Outpatient Departments</p>
+            <ul>
+              <li>Diabetes Clinic</li>
+              <li>Cardiac Care</li>
+              <li>Physiotherapy</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <h3>Emergency Services</h3>
+            <div class="stat-number">24/7</div>
+            <span class="status-badge status-good">Active</span>
+            <ul>
+              <li>Trauma Center</li>
+              <li>Critical Care</li>
+              <li>Emergency Response</li>
+            </ul>
+          </div>
+        </div>
+      </section>
     </main>
 
-    <script src="assets/js/darkMode.js"></script>
     <script>
-      // Update current time
-      function updateTime() {
-        const timeElement = document.getElementById("currentTime");
-        const now = new Date();
-        const timeString = now.toISOString().replace("T", " ").substr(0, 19);
-        timeElement.textContent = `UTC: ${timeString}`;
+      function toggleTheme() {
+        const body = document.body;
+        if (body.hasAttribute("data-theme")) {
+          body.removeAttribute("data-theme");
+        } else {
+          body.setAttribute("data-theme", "dark");
+        }
       }
-
-      // Update time every second
-      setInterval(updateTime, 1000);
-      updateTime(); // Initial update
     </script>
   </body>
 </html>

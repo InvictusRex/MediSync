@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HMS - Doctors List</title>
+    <link rel="stylesheet" href="../assets/css/style.css" />
+    <link rel="stylesheet" href="../assets/css/doctors.css" />
+  </head>
+  <body>
+    <div class="theme-toggle">
+      <button id="darkModeToggle">
+        <i class="moon">🌙</i>
+        <i class="sun">☀️</i>
+      </button>
+    </div>
+
+    <div class="container">
+      <header class="page-header">
+        <h1>Our Doctors</h1>
+        <div class="filters">
+          <select id="departmentFilter">
+            <option value="">All Departments</option>
+            <option value="cardiology">Cardiology</option>
+            <option value="neurology">Neurology</option>
+            <option value="orthopedics">Orthopedics</option>
+          </select>
+          <input
+            type="text"
+            id="searchDoctor"
+            placeholder="Search doctors..."
+          />
+        </div>
+      </header>
+
+      <div class="doctors-grid">
+        <!-- Doctor cards will be dynamically added here -->
+      </div>
+    </div>
+
+    <script src="../assets/js/darkMode.js"></script>
+    <script src="../assets/js/doctors.js"></script>
+  </body>
+</html>

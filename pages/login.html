@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HMS - Login</title>
+    <link rel="stylesheet" href="../assets/css/style.css" />
+    <link rel="stylesheet" href="../assets/css/auth.css" />
+  </head>
+  <body>
+    <div class="theme-toggle">
+      <button id="darkModeToggle">
+        <i class="moon">🌙</i>
+        <i class="sun">☀️</i>
+      </button>
+    </div>
+
+    <div class="auth-container">
+      <div class="auth-box">
+        <h1>Welcome to HMS</h1>
+        <div class="role-selector">
+          <button class="role-btn active" data-role="patient">Patient</button>
+          <button class="role-btn" data-role="doctor">Doctor</button>
+          <button class="role-btn" data-role="admin">Admin</button>
+        </div>
+
+        <form id="loginForm" class="auth-form">
+          <div class="form-group">
+            <label for="username">Email/Phone</label>
+            <input type="text" id="username" name="username" required />
+          </div>
+
+          <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" required />
+          </div>
+
+          <button type="submit" class="btn-primary">Login</button>
+        </form>
+
+        <p class="auth-links">
+          New patient? <a href="register.html">Register here</a>
+        </p>
+      </div>
+    </div>
+
+    <script src="../assets/js/darkMode.js"></script>
+    <script src="../assets/js/auth.js"></script>
+  </body>
+</html>
