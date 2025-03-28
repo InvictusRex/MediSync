@@ -1,9 +1,15 @@
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Search } from "lucide-react"
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Search } from "lucide-react";
 
 // Sample data
 const doctors = [
@@ -87,7 +93,7 @@ const doctors = [
     email: "david.kim@medicare.com",
     image: "/placeholder.svg?height=150&width=150",
   },
-]
+];
 
 const departments = [
   "All Departments",
@@ -99,7 +105,7 @@ const departments = [
   "Oncology",
   "Psychiatry",
   "Ophthalmology",
-]
+];
 
 export default function DoctorsPage() {
   return (
@@ -111,7 +117,7 @@ export default function DoctorsPage() {
               <div className="h-8 w-8 rounded-full bg-blue-500 flex items-center justify-center">
                 <span className="text-white font-bold text-lg">H</span>
               </div>
-              <h1 className="text-xl font-bold text-gray-800">MediCare</h1>
+              <h1 className="text-xl font-bold text-gray-800">MediSync</h1>
             </Link>
           </div>
           <div className="flex items-center space-x-4">
@@ -129,15 +135,20 @@ export default function DoctorsPage() {
         <div className="mb-8">
           <h1 className="text-3xl font-bold mb-4">Our Doctors</h1>
           <p className="text-gray-600 max-w-3xl">
-            Meet our team of experienced and dedicated healthcare professionals. Our doctors are committed to providing
-            the highest quality of care to all our patients.
+            Meet our team of experienced and dedicated healthcare professionals.
+            Our doctors are committed to providing the highest quality of care
+            to all our patients.
           </p>
         </div>
 
         <div className="flex flex-col md:flex-row gap-4 mb-8">
           <div className="relative flex-grow">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-            <Input type="search" placeholder="Search doctors by name or specialization..." className="pl-10" />
+            <Input
+              type="search"
+              placeholder="Search doctors by name or specialization..."
+              className="pl-10"
+            />
           </div>
           <div className="w-full md:w-64">
             <Select defaultValue="All Departments">
@@ -157,7 +168,10 @@ export default function DoctorsPage() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {doctors.map((doctor) => (
-            <Card key={doctor.id} className="overflow-hidden hover:shadow-md transition-shadow">
+            <Card
+              key={doctor.id}
+              className="overflow-hidden hover:shadow-md transition-shadow"
+            >
               <div className="aspect-square bg-gray-100 flex items-center justify-center">
                 <img
                   src={doctor.image || "/placeholder.svg"}
@@ -167,16 +181,21 @@ export default function DoctorsPage() {
               </div>
               <CardContent className="p-4">
                 <h3 className="font-bold text-lg mb-1">{doctor.name}</h3>
-                <p className="text-blue-600 font-medium mb-2">{doctor.department}</p>
+                <p className="text-blue-600 font-medium mb-2">
+                  {doctor.department}
+                </p>
                 <div className="space-y-2 text-sm text-gray-600">
                   <p>
-                    <span className="font-medium">Specialization:</span> {doctor.specialization}
+                    <span className="font-medium">Specialization:</span>{" "}
+                    {doctor.specialization}
                   </p>
                   <p>
-                    <span className="font-medium">Experience:</span> {doctor.experience}
+                    <span className="font-medium">Experience:</span>{" "}
+                    {doctor.experience}
                   </p>
                   <p>
-                    <span className="font-medium">Contact:</span> {doctor.contact}
+                    <span className="font-medium">Contact:</span>{" "}
+                    {doctor.contact}
                   </p>
                   <p>
                     <span className="font-medium">Email:</span> {doctor.email}
@@ -201,30 +220,44 @@ export default function DoctorsPage() {
                 <div className="h-8 w-8 rounded-full bg-blue-500 flex items-center justify-center">
                   <span className="text-white font-bold text-lg">H</span>
                 </div>
-                <h2 className="text-xl font-bold">MediCare</h2>
+                <h2 className="text-xl font-bold">MediSync</h2>
               </div>
-              <p className="text-gray-400">Modern healthcare management system for hospitals and clinics.</p>
+              <p className="text-gray-400">
+                Modern healthcare management system for hospitals and clinics.
+              </p>
             </div>
             <div>
               <h3 className="text-lg font-semibold mb-4">Quick Links</h3>
               <ul className="space-y-2">
                 <li>
-                  <Link href="/" className="text-gray-400 hover:text-white transition-colors">
+                  <Link
+                    href="/"
+                    className="text-gray-400 hover:text-white transition-colors"
+                  >
                     Home
                   </Link>
                 </li>
                 <li>
-                  <Link href="/about" className="text-gray-400 hover:text-white transition-colors">
+                  <Link
+                    href="/about"
+                    className="text-gray-400 hover:text-white transition-colors"
+                  >
                     About
                   </Link>
                 </li>
                 <li>
-                  <Link href="/doctors" className="text-gray-400 hover:text-white transition-colors">
+                  <Link
+                    href="/doctors"
+                    className="text-gray-400 hover:text-white transition-colors"
+                  >
                     Doctors
                   </Link>
                 </li>
                 <li>
-                  <Link href="/contact" className="text-gray-400 hover:text-white transition-colors">
+                  <Link
+                    href="/contact"
+                    className="text-gray-400 hover:text-white transition-colors"
+                  >
                     Contact
                   </Link>
                 </li>
@@ -234,12 +267,18 @@ export default function DoctorsPage() {
               <h3 className="text-lg font-semibold mb-4">Legal</h3>
               <ul className="space-y-2">
                 <li>
-                  <Link href="/privacy" className="text-gray-400 hover:text-white transition-colors">
+                  <Link
+                    href="/privacy"
+                    className="text-gray-400 hover:text-white transition-colors"
+                  >
                     Privacy Policy
                   </Link>
                 </li>
                 <li>
-                  <Link href="/terms" className="text-gray-400 hover:text-white transition-colors">
+                  <Link
+                    href="/terms"
+                    className="text-gray-400 hover:text-white transition-colors"
+                  >
                     Terms of Service
                   </Link>
                 </li>
@@ -252,11 +291,10 @@ export default function DoctorsPage() {
             </div>
           </div>
           <div className="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
-            <p>© {new Date().getFullYear()} MediCare. All rights reserved.</p>
+            <p>© {new Date().getFullYear()} MediSync. All rights reserved.</p>
           </div>
         </div>
       </footer>
     </div>
-  )
+  );
 }
-

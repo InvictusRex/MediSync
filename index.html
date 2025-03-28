@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Welcome to HMS - Hospital Management System</title>
+    <link rel="stylesheet" href="assets/css/style.css" />
+    <style>
+      /* Landing page specific styles */
+      .hero {
+        min-height: 100vh;
+        background: linear-gradient(
+          rgba(33, 150, 243, 0.1),
+          rgba(33, 150, 243, 0.05)
+        );
+        padding: 2rem;
+      }
+
+      .hero-content {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding-top: 100px;
+        text-align: center;
+      }
+
+      .hero h1 {
+        font-size: 3rem;
+        margin-bottom: 1.5rem;
+        color: var(--primary-color);
+      }
+
+      .hero p {
+        font-size: 1.2rem;
+        color: var(--text-secondary);
+        margin-bottom: 2rem;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .cta-buttons {
+        display: flex;
+        gap: 20px;
+        justify-content: center;
+        margin-top: 40px;
+      }
+
+      .cta-buttons .btn-primary {
+        min-width: 150px;
+      }
+
+      .btn-secondary {
+        background-color: var(--bg-secondary);
+        color: var(--text-primary);
+        border: 2px solid var(--primary-color);
+        padding: 12px 24px;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: all 0.3s;
+      }
+
+      .btn-secondary:hover {
+        background-color: var(--primary-color);
+        color: white;
+      }
+
+      .features {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 30px;
+        max-width: 1200px;
+        margin: 60px auto;
+        padding: 0 20px;
+      }
+
+      .feature-card {
+        background-color: var(--bg-secondary);
+        padding: 30px;
+        border-radius: 12px;
+        text-align: center;
+        box-shadow: 0 4px 6px var(--shadow-color);
+        transition: transform 0.3s;
+      }
+
+      .feature-card:hover {
+        transform: translateY(-5px);
+      }
+
+      .feature-icon {
+        font-size: 2.5rem;
+        margin-bottom: 20px;
+        color: var(--primary-color);
+      }
+
+      .current-time {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background-color: var(--bg-secondary);
+        padding: 10px 20px;
+        border-radius: 20px;
+        box-shadow: 0 2px 4px var(--shadow-color);
+        font-size: 0.9rem;
+        color: var(--text-secondary);
+      }
+
+      @media (max-width: 768px) {
+        .hero h1 {
+          font-size: 2rem;
+        }
+
+        .cta-buttons {
+          flex-direction: column;
+          align-items: center;
+        }
+
+        .feature-card {
+          margin: 0 20px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="theme-toggle">
+      <button id="darkModeToggle">
+        <i class="moon">🌙</i>
+        <i class="sun">☀️</i>
+      </button>
+    </div>
+
+    <main class="hero">
+      <div class="hero-content">
+        <h1>Hospital Management System</h1>
+        <p>
+          A modern, efficient solution for managing healthcare services.
+          Streamline patient care, appointments, and medical records with our
+          comprehensive system.
+        </p>
+
+        <div class="cta-buttons">
+          <a href="pages/login.html" class="btn-primary">Login</a>
+          <a href="pages/register.html" class="btn-secondary"
+            >Register as Patient</a
+          >
+        </div>
+
+        <div class="features">
+          <div class="feature-card">
+            <div class="feature-icon">👨‍⚕️</div>
+            <h3>Doctor Management</h3>
+            <p>Efficiently manage doctor schedules and patient appointments</p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon">📋</div>
+            <h3>Patient Records</h3>
+            <p>Secure and organized patient medical history management</p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon">🗓️</div>
+            <h3>Appointment Booking</h3>
+            <p>Easy and quick appointment scheduling system</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="current-time" id="currentTime">UTC: 2025-03-28 14:24:44</div>
+    </main>
+
+    <script src="assets/js/darkMode.js"></script>
+    <script>
+      // Update current time
+      function updateTime() {
+        const timeElement = document.getElementById("currentTime");
+        const now = new Date();
+        const timeString = now.toISOString().replace("T", " ").substr(0, 19);
+        timeElement.textContent = `UTC: ${timeString}`;
+      }
+
+      // Update time every second
+      setInterval(updateTime, 1000);
+      updateTime(); // Initial update
+    </script>
+  </body>
+</html>
