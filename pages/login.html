@@ -379,12 +379,24 @@
         <form id="loginForm" class="auth-form">
           <div class="form-group">
             <label for="username">Email/Phone</label>
-            <input type="text" id="username" name="username" required />
+            <input
+              type="text"
+              id="username"
+              name="username"
+              required
+              placeholder="Enter your email or phone number"
+            />
           </div>
 
           <div class="form-group">
             <label for="password">Password</label>
-            <input type="password" id="password" name="password" required />
+            <input
+              type="password"
+              id="password"
+              name="password"
+              required
+              placeholder="Enter your password"
+            />
           </div>
 
           <button type="submit" class="btn-primary">Login</button>
@@ -405,7 +417,84 @@
           body.setAttribute("data-theme", "dark");
         }
       }
+
+      // Handle login form submission
+      document
+        .getElementById("loginForm")
+        .addEventListener("submit", async (event) => {
+          event.preventDefault();
+
+          const identifier = document.getElementById("username").value.trim();
+          const password = document.getElementById("password").value;
+          const selectedRole = document
+            .querySelector(".role-btn.active")
+            .getAttribute("data-role");
+
+          // Basic validation
+          if (!identifier || !password) {
+            alert("Please fill in all fields");
+            return;
+          }
+
+          // Determine if the identifier is an email or phone number
+          const isEmail = identifier.includes("@");
+
+          try {
+            const response = await fetch("http://localhost:8000/login", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                identifier: identifier, // This will be either email or phone
+                password: password,
+                role: selectedRole, // Include selected role
+              }),
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+              // Login successful
+              alert("Login successful!");
+
+              // Redirect based on role
+              switch (selectedRole) {
+                case "patient":
+                  window.location.href = "patient-dashboard.html";
+                  break;
+                case "doctor":
+                  window.location.href = "doctor-dashboard.html";
+                  break;
+                case "admin":
+                  window.location.href = "admin-dashboard.html";
+                  break;
+              }
+            } else {
+              // Handle different error cases
+              if (data.detail) {
+                alert(data.detail);
+              } else {
+                alert("Invalid credentials. Please try again.");
+              }
+            }
+          } catch (error) {
+            console.error("Error:", error);
+            alert("An error occurred. Please try again later.");
+          }
+        });
+
+      // Handle role button clicks
+      document.querySelectorAll(".role-btn").forEach((button) => {
+        button.addEventListener("click", (e) => {
+          // Remove active class from all buttons
+          document.querySelectorAll(".role-btn").forEach((btn) => {
+            btn.classList.remove("active");
+          });
+          // Add active class to clicked button
+          e.target.classList.add("active");
+        });
+      });
     </script>
-    <script src="../assets/js/auth.js"></script>
   </body>
 </html>

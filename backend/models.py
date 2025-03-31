@@ -1,7 +1,9 @@
-from sqlalchemy import Column, Integer, String, create_engine
+from sqlalchemy import Column, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy import create_engine
 
+# Database configuration
 DATABASE_URL = "mysql+mysqlconnector://TheKingslayer:rupankar@localhost/medisync"
 
 Base = declarative_base()
@@ -16,15 +18,22 @@ class User(Base):
     phone = Column(String(20), unique=True)
     email = Column(String(100), unique=True)
     password = Column(String(100))
+    role = Column(String(20), default="patient")  # Added role column for authentication
+
+    def verify_password(self, password: str) -> bool:
+        """Verify if the provided password matches the stored password"""
+        return self.password == password
 
 class Appointment(Base):
     __tablename__ = "appointments"
     id = Column(Integer, primary_key=True, index=True)
-    patient_name = Column(String(100), index=True)  # Specify length for VARCHAR
-    time = Column(String(50))  # Specify length for VARCHAR
-    status = Column(String(50))  # Specify length for VARCHAR
+    patient_name = Column(String(100), index=True)
+    time = Column(String(50))
+    status = Column(String(50))
 
+# Database engine and session configuration
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
+# Create all tables in the database
 Base.metadata.create_all(bind=engine)
