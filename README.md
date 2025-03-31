@@ -1,4 +1,4 @@
-# **MediSync - Healthcare Management System**
+# **MediSync HMS - Healthcare Management System**
 
 MediSync is a modern **Healthcare Management System (HMS)** designed to streamline patient-doctor interactions. Built with **Vanilla HTML, CSS, and JavaScript**, it provides an intuitive interface for managing appointments, patient records, and doctor availability.
 
