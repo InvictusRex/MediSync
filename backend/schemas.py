@@ -1,6 +1,7 @@
 from pydantic import BaseModel, EmailStr, constr
 from typing import Optional
 
+# User related schemas
 class UserCreate(BaseModel):
     name: str
     age: int
@@ -25,6 +26,23 @@ class UserResponse(BaseModel):
     class Config:
         from_attributes = True
 
+# Doctor related schemas
+class DoctorBase(BaseModel):
+    name: str
+    department: str
+    description: str
+    image_url: str
+
+class DoctorCreate(DoctorBase):
+    pass
+
+class DoctorResponse(DoctorBase):
+    id: int
+
+    class Config:
+        from_attributes = True
+
+# Appointment related schemas
 class AppointmentCreate(BaseModel):
     patient_name: str
     time: str
@@ -36,7 +54,7 @@ class AppointmentResponse(AppointmentCreate):
     class Config:
         from_attributes = True
 
-# Optional: Add this if you want to handle token-based authentication later
+# Optional: Token-based authentication schemas
 class Token(BaseModel):
     access_token: str
     token_type: str
@@ -44,3 +62,7 @@ class Token(BaseModel):
 class TokenData(BaseModel):
     email: Optional[str] = None
     role: Optional[str] = None
+
+# Optional: Department list schema (if needed)
+class DepartmentList(BaseModel):
+    departments: list[str]

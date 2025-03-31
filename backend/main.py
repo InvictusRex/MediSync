@@ -1,6 +1,7 @@
-from fastapi import FastAPI, Depends, HTTPException
+from fastapi import FastAPI, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 from fastapi.middleware.cors import CORSMiddleware
+from typing import Optional, List
 import models, schemas, crud
 from database import SessionLocal
 
@@ -22,6 +23,7 @@ def get_db():
     finally:
         db.close()
 
+# User Registration and Login endpoints
 @app.post("/register", response_model=schemas.UserResponse)
 def register_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
     # Check if email exists
@@ -71,7 +73,54 @@ def login_user(user: schemas.UserLogin, db: Session = Depends(get_db)):
             detail="Invalid login credentials"
         )
 
-@app.get("/appointments", response_model=list[schemas.AppointmentResponse])
+# Doctor endpoints
+@app.post("/doctors/", response_model=schemas.DoctorResponse)
+def create_doctor(doctor: schemas.DoctorCreate, db: Session = Depends(get_db)):
+    try:
+        return crud.create_doctor(db=db, doctor=doctor)
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail="Failed to create doctor profile"
+        )
+
+@app.get("/doctors/", response_model=List[schemas.DoctorResponse])
+def read_doctors(
+    skip: int = 0,
+    limit: int = 100,
+    department: Optional[str] = None,
+    search: Optional[str] = None,
+    db: Session = Depends(get_db)
+):
+    try:
+        if department:
+            doctors = crud.get_doctors_by_department(db, department)
+        elif search:
+            doctors = crud.search_doctors(db, search)
+        else:
+            doctors = crud.get_doctors(db, skip=skip, limit=limit)
+        return doctors
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail="Failed to fetch doctors"
+        )
+
+@app.get("/doctors/{doctor_id}", response_model=schemas.DoctorResponse)
+def read_doctor(doctor_id: int, db: Session = Depends(get_db)):
+    try:
+        db_doctor = crud.get_doctor(db, doctor_id=doctor_id)
+        if db_doctor is None:
+            raise HTTPException(status_code=404, detail="Doctor not found")
+        return db_doctor
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail="Failed to fetch doctor details"
+        )
+
+# Appointment endpoints
+@app.get("/appointments", response_model=List[schemas.AppointmentResponse])
 def read_appointments(
     skip: int = 0, 
     limit: int = 10, 
@@ -99,11 +148,21 @@ def create_appointment(
             detail="Failed to create appointment"
         )
 
-# Optional: Add these helper endpoints if needed
-@app.get("/users/me", response_model=schemas.UserResponse)
-def read_user_profile(db: Session = Depends(get_db)):
-    # This would need authentication middleware to get current user
-    pass
+@app.get("/doctors/{doctor_id}/appointments", response_model=List[schemas.AppointmentResponse])
+def read_doctor_appointments(
+    doctor_id: int,
+    skip: int = 0,
+    limit: int = 10,
+    db: Session = Depends(get_db)
+):
+    try:
+        appointments = crud.get_doctor_appointments(db, doctor_id, skip, limit)
+        return appointments
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail="Failed to fetch doctor appointments"
+        )
 
 @app.get("/users/{user_id}/appointments")
 def read_user_appointments(
@@ -119,4 +178,15 @@ def read_user_appointments(
         raise HTTPException(
             status_code=500,
             detail="Failed to fetch user appointments"
+        )
+
+# Optional: Department endpoints
+@app.get("/departments")
+def get_departments(db: Session = Depends(get_db)):
+    try:
+        return crud.get_all_departments(db)
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail="Failed to fetch departments"
         )
