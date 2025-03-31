@@ -111,7 +111,18 @@
         transform: translateY(-2px);
         box-shadow: 0 1px 10px var(--shadow-color);
       }
+      .status-badge {
+        display: inline-block;
+        padding: 0.3rem 0.8rem;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        margin-left: 1rem;
+      }
 
+      .card.special-facility .status-badge {
+        margin-left: 0;
+        margin-right: 0.5rem;
+      }
       .hero {
         min-height: 50vh;
         display: flex;
@@ -243,7 +254,32 @@
         .card-grid {
           grid-template-columns: 1fr;
         }
+
+        .auth-buttons {
+          flex-direction: column;
+          gap: 0.5rem;
+        }
+
+        .auth-button {
+          width: 100%;
+          padding: 0.5rem 1rem;
+          font-size: medium;
+        }
       }
+
+      @media (max-width: 480px) {
+        .header-buttons {
+          flex-direction: column;
+          gap: 0.5rem;
+        }
+
+        .auth-button {
+          width: 100%;
+          padding: 0.5rem 1rem;
+          font-size: medium;
+        }
+      }
+
       .header-buttons {
         position: absolute;
         top: 20px;
@@ -251,6 +287,28 @@
         display: flex;
         gap: 10px;
         align-items: center;
+      }
+
+      .footer {
+        background-color: var(--bg-secondary);
+        padding: 2rem 1.5rem;
+        color: var(--text-secondary);
+        text-align: center;
+        border-top: 1px solid var(--border-color);
+      }
+
+      .footer p {
+        margin-bottom: 1rem;
+      }
+
+      .footer a {
+        color: var(--text-primary);
+        text-decoration: none;
+        margin: 0 0.5rem;
+      }
+
+      .footer a:hover {
+        text-decoration: underline;
       }
     </style>
   </head>
@@ -423,7 +481,7 @@
           Special Facilities
         </h2>
         <div class="card-grid">
-          <div class="card">
+          <div class="card special-facility">
             <h3>Diagnostic Center</h3>
             <div class="stat-number">12</div>
             <p>Advanced Labs</p>
@@ -434,7 +492,7 @@
             </ul>
           </div>
 
-          <div class="card">
+          <div class="card special-facility">
             <h3>Pharmacy</h3>
             <div class="stat-number">4</div>
             <span class="status-badge status-good">24/7</span>
@@ -445,7 +503,7 @@
             </ul>
           </div>
 
-          <div class="card">
+          <div class="card special-facility">
             <h3>Specialized Clinics</h3>
             <div class="stat-number">15</div>
             <p>Outpatient Departments</p>
@@ -456,7 +514,7 @@
             </ul>
           </div>
 
-          <div class="card">
+          <div class="card special-facility">
             <h3>Emergency Services</h3>
             <div class="stat-number">24/7</div>
             <span class="status-badge status-good">Active</span>
@@ -470,6 +528,15 @@
       </section>
       <br /><br />
     </main>
+
+    <footer class="footer">
+      <p>&copy; 2025 MediSync HMS. All rights reserved.</p>
+      <p>
+        <a href="pages/privacy-policy.html">Privacy Policy</a> |
+        <a href="pages/terms-of-service.html">Terms of Service</a> |
+        <a href="pages/contact-us.html">Contact Us</a>
+      </p>
+    </footer>
 
     <script>
       function toggleTheme() {
