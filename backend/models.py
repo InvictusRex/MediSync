@@ -6,6 +6,17 @@ DATABASE_URL = "mysql+mysqlconnector://TheKingslayer:rupankar@localhost/medisync
 
 Base = declarative_base()
 
+class User(Base):
+    __tablename__ = "users"
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String(100), unique=True, index=True)
+    age = Column(Integer)
+    blood_group = Column(String(10))
+    medical_history = Column(String(300))
+    phone = Column(String(20), unique=True)
+    email = Column(String(100), unique=True)
+    password = Column(String(100))
+
 class Appointment(Base):
     __tablename__ = "appointments"
     id = Column(Integer, primary_key=True, index=True)

@@ -1,8 +1,8 @@
 from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.orm import Session
-from pydantic import BaseModel
-from models import Appointment, SessionLocal
-from fastapi.middleware.cors import CORSMiddleware  # Import CORS middleware
+from fastapi.middleware.cors import CORSMiddleware
+import models, schemas, crud
+from database import SessionLocal
 
 app = FastAPI()
 
@@ -15,17 +15,6 @@ app.add_middleware(
     allow_headers=["*"],  # Allows all headers
 )
 
-class AppointmentCreate(BaseModel):
-    patient_name: str
-    time: str
-    status: str
-
-class AppointmentResponse(AppointmentCreate):
-    id: int
-
-    class Config:
-        orm_mode = True
-
 def get_db():
     db = SessionLocal()
     try:
@@ -33,14 +22,33 @@ def get_db():
     finally:
         db.close()
 
-@app.get("/appointments", response_model=list[AppointmentResponse])
+@app.post("/register", response_model=schemas.UserCreate)
+def register_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
+    db_user = crud.get_user_by_email(db, email=user.email)
+    if db_user:
+        raise HTTPException(status_code=400, detail="Email already registered")
+    db_user = crud.get_user_by_phone(db, phone=user.phone)
+    if db_user:
+        raise HTTPException(status_code=400, detail="Phone number already registered")
+    return crud.create_user(db=db, user=user)
+
+@app.post("/login")
+def login_user(user: schemas.UserLogin, db: Session = Depends(get_db)):
+    db_user = crud.get_user_by_email(db, email=user.username)
+    if not db_user:
+        db_user = crud.get_user_by_phone(db, phone=user.username)
+    if not db_user or db_user.password != user.password:
+        raise HTTPException(status_code=400, detail="Invalid credentials")
+    return {"message": "Login successful"}
+
+@app.get("/appointments", response_model=list[schemas.AppointmentResponse])
 def read_appointments(skip: int = 0, limit: int = 10, db: Session = Depends(get_db)):
-    appointments = db.query(Appointment).offset(skip).limit(limit).all()
+    appointments = db.query(models.Appointment).offset(skip).limit(limit).all()
     return appointments
 
-@app.post("/appointments", response_model=AppointmentResponse)
-def create_appointment(appointment: AppointmentCreate, db: Session = Depends(get_db)):
-    db_appointment = Appointment(**appointment.dict())
+@app.post("/appointments", response_model=schemas.AppointmentResponse)
+def create_appointment(appointment: schemas.AppointmentCreate, db: Session = Depends(get_db)):
+    db_appointment = models.Appointment(**appointment.dict())
     db.add(db_appointment)
     db.commit()
     db.refresh(db_appointment)
