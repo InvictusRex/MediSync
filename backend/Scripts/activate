@@ -37,7 +37,7 @@ deactivate () {
 # unset irrelevant variables
 deactivate nondestructive
 
-VIRTUAL_ENV="E:\__Work_Files__\5. Project - MediSync\MediSync\backend"
+VIRTUAL_ENV="E:\1_Work_Files\5_Project - MediSync\MediSync\backend"
 export VIRTUAL_ENV
 
 _OLD_VIRTUAL_PATH="$PATH"
