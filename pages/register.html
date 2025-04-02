@@ -275,43 +275,64 @@
         .getElementById("registrationForm")
         .addEventListener("submit", async (event) => {
           event.preventDefault();
-          const name = document.getElementById("name").value;
-          const age = document.getElementById("age").value;
-          const bloodGroup = document.getElementById("bloodGroup").value;
-          const medicalHistory =
-            document.getElementById("medicalHistory").value;
-          const phone = document.getElementById("phone").value;
-          const email = document.getElementById("email").value;
-          const password = document.getElementById("password").value;
-          const confirmPassword =
-            document.getElementById("confirmPassword").value;
 
-          if (password !== confirmPassword) {
-            alert("Passwords do not match");
-            return;
-          }
+          try {
+            // Get form values
+            const name = document.getElementById("name").value;
+            const age = document.getElementById("age").value;
+            const bloodGroup = document.getElementById("bloodGroup").value;
+            const medicalHistory =
+              document.getElementById("medicalHistory").value;
+            const phone = document.getElementById("phone").value;
+            const email = document.getElementById("email").value;
+            const password = document.getElementById("password").value;
+            const confirmPassword =
+              document.getElementById("confirmPassword").value;
 
-          const response = await fetch("http://localhost:8000/register", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              name,
-              age: parseInt(age),
-              blood_group: bloodGroup, // Changed from bloodGroup
-              medical_history: medicalHistory, // Changed from medicalHistory
-              phone,
-              email,
-              password,
-            }),
-          });
-          const data = await response.json();
+            // Validate passwords match
+            if (password !== confirmPassword) {
+              alert("Passwords do not match");
+              return;
+            }
 
-          if (response.ok) {
-            alert("Registration successful");
-            // Redirect to login page
-            window.location.href = "login.html";
-          } else {
-            alert(data.detail);
+            // Validate age
+            if (parseInt(age) < 0 || parseInt(age) > 150) {
+              alert("Please enter a valid age between 0 and 150");
+              return;
+            }
+
+            // Make API call to new patient registration endpoint
+            const response = await fetch(
+              "http://localhost:8000/patients/register",
+              {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  name,
+                  age: parseInt(age),
+                  blood_group: bloodGroup,
+                  medical_history: medicalHistory,
+                  phone,
+                  email,
+                  password,
+                }),
+              }
+            );
+
+            const data = await response.json();
+
+            if (response.ok) {
+              alert("Registration successful!");
+              window.location.href = "login.html";
+            } else {
+              // Handle specific error messages
+              const errorMessage =
+                data.detail || "Registration failed. Please try again.";
+              alert(errorMessage);
+            }
+          } catch (error) {
+            console.error("Registration error:", error);
+            alert("An error occurred during registration. Please try again.");
           }
         });
     </script>

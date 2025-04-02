@@ -345,7 +345,7 @@
         font-size: 1.5rem;
         font-weight: bold;
         padding-left: 1.5rem;
-        color: white;
+        color: var(--text-primary);
         margin-top: -10px;
         display: inline-block;
       "
@@ -424,42 +424,48 @@
         .addEventListener("submit", async (event) => {
           event.preventDefault();
 
-          const identifier = document.getElementById("username").value.trim();
-          const password = document.getElementById("password").value;
-          const selectedRole = document
-            .querySelector(".role-btn.active")
-            .getAttribute("data-role");
-
-          // Basic validation
-          if (!identifier || !password) {
-            alert("Please fill in all fields");
-            return;
-          }
-
-          // Determine if the identifier is an email or phone number
-          const isEmail = identifier.includes("@");
-
           try {
+            const identifier = document.getElementById("username").value.trim();
+            const password = document.getElementById("password").value;
+            const userType = document
+              .querySelector(".role-btn.active")
+              .getAttribute("data-role");
+
+            // Basic validation
+            if (!identifier || !password) {
+              alert("Please fill in all fields");
+              return;
+            }
+
+            // Show loading state
+            const submitButton = event.target.querySelector(
+              'button[type="submit"]'
+            );
+            submitButton.disabled = true;
+            submitButton.textContent = "Logging in...";
+
             const response = await fetch("http://localhost:8000/login", {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
               },
               body: JSON.stringify({
-                identifier: identifier, // This will be either email or phone
+                identifier: identifier,
                 password: password,
-                role: selectedRole, // Include selected role
+                user_type: userType, // Updated to match API schema
               }),
             });
 
             const data = await response.json();
 
             if (response.ok) {
-              // Login successful
-              alert("Login successful!");
+              // Store the token in localStorage
+              localStorage.setItem("token", data.access_token);
+              localStorage.setItem("user_type", userType);
+              localStorage.setItem("user_id", data.user_id);
 
               // Redirect based on role
-              switch (selectedRole) {
+              switch (userType) {
                 case "patient":
                   window.location.href = "patient-dashboard.html";
                   break;
@@ -472,15 +478,20 @@
               }
             } else {
               // Handle different error cases
-              if (data.detail) {
-                alert(data.detail);
-              } else {
-                alert("Invalid credentials. Please try again.");
-              }
+              const errorMessage =
+                data.detail || "Invalid credentials. Please try again.";
+              alert(errorMessage);
             }
           } catch (error) {
             console.error("Error:", error);
             alert("An error occurred. Please try again later.");
+          } finally {
+            // Reset button state
+            const submitButton = document.querySelector(
+              'button[type="submit"]'
+            );
+            submitButton.disabled = false;
+            submitButton.textContent = "Login";
           }
         });
 
@@ -493,8 +504,21 @@
           });
           // Add active class to clicked button
           e.target.classList.add("active");
+
+          // Update registration link visibility
+          const authLinks = document.querySelector(".auth-links");
+          authLinks.style.display =
+            e.target.getAttribute("data-role") === "patient" ? "block" : "none";
         });
       });
+
+      // Hide registration link for non-patient roles on load
+      if (
+        document.querySelector(".role-btn.active").getAttribute("data-role") !==
+        "patient"
+      ) {
+        document.querySelector(".auth-links").style.display = "none";
+      }
     </script>
   </body>
 </html>

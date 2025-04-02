@@ -1,68 +1,74 @@
-from pydantic import BaseModel, EmailStr, constr
-from typing import Optional
+from pydantic import BaseModel
+from typing import Optional, List
+from datetime import datetime
 
-# User related schemas
-class UserCreate(BaseModel):
+class UserBase(BaseModel):
     name: str
+    phone: str
+    email: str
+
+class PatientCreate(UserBase):
+    password: str
     age: int
     blood_group: str
     medical_history: str
-    phone: str
-    email: str
+
+class DoctorCreate(UserBase):
     password: str
-    role: str = "patient"  # Default role for new users
+    department: str
+    description: str
+    image_url: Optional[str] = "https://placehold.co/300x200"
+
+class AdminCreate(UserBase):
+    password: str
+    department: Optional[str] = None
 
 class UserLogin(BaseModel):
-    identifier: str    # Will handle both email and phone
+    identifier: str  # Email or phone
     password: str
-    role: str         # To specify user role during login
+    user_type: str  # "patient", "doctor", or "admin"
 
-class UserResponse(BaseModel):
+class PatientResponse(UserBase):
     id: int
-    name: str
-    email: str
-    role: str
-    
+    age: int
+    blood_group: str
+    medical_history: str
+
     class Config:
         from_attributes = True
 
-# Doctor related schemas
-class DoctorBase(BaseModel):
+# Updated DoctorResponse to match frontend requirements
+class DoctorResponse(BaseModel):
+    id: int
     name: str
     department: str
     description: str
-    image_url: str
-
-class DoctorCreate(DoctorBase):
-    pass
-
-class DoctorResponse(DoctorBase):
-    id: int
+    image_url: Optional[str] = "https://placehold.co/300x200"
 
     class Config:
         from_attributes = True
 
-# Appointment related schemas
+class AdminResponse(UserBase):
+    id: int
+    department: Optional[str]
+
+    class Config:
+        from_attributes = True
+
 class AppointmentCreate(BaseModel):
-    patient_name: str
-    time: str
-    status: str
+    patient_id: int
+    doctor_id: int
+    appointment_time: datetime
+    status: str = "pending"
 
-class AppointmentResponse(AppointmentCreate):
+class AppointmentResponse(BaseModel):
     id: int
+    patient_id: int
+    doctor_id: int
+    appointment_time: datetime
+    status: str
+    patient: PatientResponse
+    doctor: DoctorResponse
 
     class Config:
         from_attributes = True
-
-# Optional: Token-based authentication schemas
-class Token(BaseModel):
-    access_token: str
-    token_type: str
-
-class TokenData(BaseModel):
-    email: Optional[str] = None
-    role: Optional[str] = None
-
-# Optional: Department list schema (if needed)
-class DepartmentList(BaseModel):
-    departments: list[str]
