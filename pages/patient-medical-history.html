@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>MediSync - Doctor Dashboard</title>
+    <title>MediSync - Patient Dashboard</title>
     <style>
       :root {
         --bg-primary: #0a0a0a;
@@ -237,7 +237,7 @@
       }
 
       .btn-secondary {
-        background: var(--success-color);
+        background: var(--bg-primary);
         color: var(--text-primary);
         border: 1px solid var(--border-color);
       }
@@ -296,6 +296,27 @@
         color: var(--text-primary);
       }
 
+      .form-group {
+        margin-bottom: 1rem;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        color: var(--text-secondary);
+      }
+
+      .form-group select,
+      .form-group input,
+      .form-group textarea {
+        width: 100%;
+        padding: 0.75rem;
+        border-radius: 6px;
+        border: 1px solid var(--border-color);
+        background: var(--bg-primary);
+        color: var(--text-primary);
+      }
+
       @media (max-width: 768px) {
         .dashboard-container {
           flex-direction: column;
@@ -344,68 +365,53 @@
         <div class="user-info">
           <div class="user-avatar">I</div>
           <h3>InvictusRex</h3>
-          <p>Doctor</p>
+          <p>Patient ID: P12345</p>
         </div>
 
         <ul class="nav-menu">
-          <li><a href="#" class="active">Dashboard</a></li>
-          <li><a href="doctor-profile.html">Profile</a></li>
-          <li><a href="#appointments">My Appointments</a></li>
-          <li><a href="#patients">My Patients</a></li>
-          <li><a href="../index.html">Logout</a></li>
-        </ul>
+            <li><a href="patient-dashboard.html">Dashboard</a></li>
+            <!--<li><a href="#appointments">My Appointments</a></li>-->
+            <li><a href="patient-profile.html">Profile</a></li>
+            <li><a href="#" class="active">Medical History</a></li>
+            <li><a href="doctor-list.html">Find Doctors</a></li>
+            <li><a href="../index.html">Logout</a></li>
+          </ul>
       </aside>
 
       <main class="main-content">
         <div class="dashboard-header">
-          <h1 class="dashboard-title">Doctor Dashboard</h1>
+          <h1 class="dashboard-title">Medical History</h1>
+          <button class="btn-primary" data-modal="bookAppointmentModal">
+            Book Appointment
+          </button>
         </div>
 
         <div class="dashboard-cards">
-          <div class="card">
-            <div class="card-header">
-              <h3 class="card-title">Pending Appointments</h3>
-            </div>
-            <div class="card-body">
-              <h2>8</h2>
-            </div>
-          </div>
-
-          <div class="card">
-            <div class="card-header">
-              <h3 class="card-title">Total Patients</h3>
-            </div>
-            <div class="card-body">
-              <h2>45</h2>
-            </div>
-          </div>
-
-          <div class="card">
-            <div class="card-header">
-              <h3 class="card-title">Total Appointments</h3>
-            </div>
-            <div class="card-body">
-              <h2>3</h2>
-            </div>
-          </div>
-        </div>
-
         <div class="card">
           <div class="card-header">
-            <h3 class="card-title">Upcoming Appointments</h3>
+            <h3 class="card-title">Medical History</h3>
           </div>
           <div class="table-responsive">
             <table class="data-table">
               <thead>
                 <tr>
-                  <th>Patient Name</th>
-                  <th>Time</th>
-                  <th>Status</th>
+                  <th>Date</th>
+                  <th>Doctor</th>
+                  <th>Diagnosis</th>
                   <th>Actions</th>
                 </tr>
               </thead>
-              <tbody id="appointments-table-body">
-                <!-- Data will be inserted here dynamically -->
+              <tbody>
+                <tr>
+                  <td>2025-03-20</td>
+                  <td>Dr. John Smith</td>
+                  <td>Regular Checkup</td>
+                  <td>
+                    <button class="btn-primary" data-modal="viewHistoryModal">
+                      View Details
+                    </button>
+                  </td>
+                </tr>
               </tbody>
             </table>
           </div>
@@ -413,28 +419,45 @@
       </main>
     </div>
 
-    <!-- Patient Details Modal -->
-    <div class="modal" id="viewPatientModal">
+    <!-- Book Appointment Modal -->
+    <div class="modal" id="bookAppointmentModal">
       <div class="modal-content">
         <div class="modal-header">
-          <h2>Patient Details</h2>
+          <h2>Book Appointment</h2>
           <button class="close-modal">&times;</button>
         </div>
-        <div class="patient-details">
+        <form id="appointmentForm">
           <div class="form-group">
-            <label>Name</label>
-            <p id="patient-name"></p>
+            <label for="department">Department</label>
+            <select id="department" required>
+              <option value="">Select Department</option>
+              <option value="cardiology">Cardiology</option>
+              <option value="neurology">Neurology</option>
+              <option value="orthopedics">Orthopedics</option>
+            </select>
           </div>
           <div class="form-group">
-            <label>Medical History</label>
-            <textarea id="medicalHistory" rows="4" readonly></textarea>
+            <label for="doctor">Doctor</label>
+            <select id="doctor" required>
+              <option value="">Select Doctor</option>
+            </select>
           </div>
           <div class="form-group">
-            <label>Last Visit</label>
-            <p></p>
+            <label for="appointmentDate">Date</label>
+            <input type="date" id="appointmentDate" required />
           </div>
-          <button class="btn-primary">Update Medical History</button>
-        </div>
+          <div class="form-group">
+            <label for="appointmentTime">Time</label>
+            <select id="appointmentTime" required>
+              <option value="">Select Time</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="reason">Reason for Visit</label>
+            <textarea id="reason" rows="3" required></textarea>
+          </div>
+          <button type="submit" class="btn-primary">Book Appointment</button>
+        </form>
       </div>
     </div>
 
@@ -448,36 +471,10 @@
         }
       }
 
-      // Fetch appointments data and update the table
-      async function fetchAppointments() {
-        const res = await fetch("http://localhost:8000/appointments");
-        const appointments = await res.json();
-        const tableBody = document.getElementById("appointments-table-body");
-
-        tableBody.innerHTML = "";
-        appointments.forEach((appointment) => {
-          const row = document.createElement("tr");
-          row.innerHTML = `
-            <td>${appointment.patient_name}</td>
-            <td>${appointment.time}</td>
-            <td><span class="status-badge status-pending">${appointment.status}</span></td>
-            <td>
-              <button class="btn-primary" data-modal="viewPatientModal" data-patient-name="${appointment.patient_name}">View</button>
-              <button class="btn-secondary">Update</button>
-            </td>
-          `;
-          tableBody.appendChild(row);
-        });
-      }
-
-      document.addEventListener("DOMContentLoaded", fetchAppointments);
-
       // Modal functionality
       document.querySelectorAll("[data-modal]").forEach((button) => {
-        button.addEventListener("click", (event) => {
+        button.addEventListener("click", () => {
           const modalId = button.getAttribute("data-modal");
-          const patientName = button.getAttribute("data-patient-name");
-          document.getElementById("patient-name").innerText = patientName;
           document.getElementById(modalId).style.display = "flex";
         });
       });
