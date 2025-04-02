@@ -6,18 +6,19 @@
 
 MediSync HMS is a modern, full-stack healthcare management system designed to streamline hospital operations and enhance patient care coordination. The system provides real-time monitoring of hospital resources and seamless management of healthcare services. Built with pure HTML, CSS, and JavaScript, it provides an intuitive interface for managing healthcare services without external dependencies.
 
-## 🏥 Key Features
+## ⭐ Key Features
+
 ### ✅ Authentication System
 - Secure user registration and login
 - Role-based access control (Admin, Doctors, Staff)
 - JWT token-based authentication
 
-### 🏥 Role-Based Dashboards
+### 📊 Role-Based Dashboards
 - **Admin Dashboard** – Manage doctors, patients, and appointments.
 - **Doctor Dashboard** – View schedules, manage appointments, and update availability.
 - **Patient Dashboard** – Book appointments, view doctor details, and manage health records.
 
-### 📊 Doctor Listings & Appointments
+### 📋 Doctor Listings & Appointments
 - Patients can browse a **list of available doctors** based on specialization.
 - **Timely appointment booking** – Patients select their preferred time slots.
 - Doctors can **approve/reject** appointments.
@@ -46,7 +47,7 @@ MediSync HMS is a modern, full-stack healthcare management system designed to st
 ### Database
 - **PostgreSQL / MySQL / SQLite** (Configurable based on environment)
 
-## 📋 Prerequisites
+## 🧩 Prerequisites
 - Python 3.8 or higher
 - **pip** (Python package manager)
 - **Virtual environment** (Recommended for dependency isolation)
