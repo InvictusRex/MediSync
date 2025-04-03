@@ -241,6 +241,29 @@
         margin-bottom: 0.5rem;
       }
 
+      .doctor_list {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        margin-top: 1rem;
+        flex-direction: column;
+        gap: 0.5rem;
+        padding: 0.5rem 2rem;
+        border-radius: 80px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: transform 0.2s, box-shadow 0.2s;
+        border: none;
+        font-size: large;
+        background-color: var(--text-primary);
+        color: var(--bg-primary);
+      }
+
+      .doctor_list:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 1px 10px var(--shadow-color);
+      }
+
       @media (max-width: 1200px) {
         .card-grid {
           grid-template-columns: repeat(2, 1fr);
@@ -266,6 +289,11 @@
           padding: 0.5rem 1rem;
           font-size: medium;
         }
+        .doctor_list {
+          width: 100%;
+          padding: 0.5rem 1rem;
+          font-size: medium;
+        }
       }
 
       @media (max-width: 480px) {
@@ -275,6 +303,12 @@
         }
 
         .auth-button {
+          width: 100%;
+          padding: 0.5rem 1rem;
+          font-size: medium;
+        }
+
+        .doctor_list {
           width: 100%;
           padding: 0.5rem 1rem;
           font-size: medium;
@@ -365,14 +399,13 @@
           medical fields, they ensure personalized and effective treatment for
           every patient.
         </p>
-
-        <div class="auth-buttons">
-          <a href="./pages/doctor-list.html" onclick="console.log('Navigating to doctor list');">
-            <button class="auth-button login">
-              Our Specialized Team of Doctors
-            </button>
-          </a>
-        </div>
+        <a
+          href="./pages/doctor-list.html"
+          onclick="console.log('Navigating to doctor list');"
+          style="text-decoration: none"
+        >
+          <button class="doctor_list">Our Specialized Team of Doctors</button>
+        </a>
       </section>
 
       <section>
