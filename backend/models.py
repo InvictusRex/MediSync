@@ -21,6 +21,13 @@ class Patient(BaseUser):
     medical_history = Column(String(300))
     appointments = relationship("Appointment", back_populates="patient")
 
+    def to_dashboard_info(self):
+        """Convert to dashboard format"""
+        return {
+            "id": self.id,
+            "name": self.name
+        }
+
 class Doctor(BaseUser):
     __tablename__ = "doctors"
     department = Column(String(50), index=True, nullable=False)
@@ -56,3 +63,12 @@ class Appointment(Base):
 
     patient = relationship("Patient", back_populates="appointments")
     doctor = relationship("Doctor", back_populates="appointments")
+
+    def to_dashboard_format(self):
+        """Convert to dashboard display format"""
+        return {
+            "id": self.id,
+            "doctor": self.doctor.to_response(),
+            "appointment_time": self.appointment_time,
+            "status": self.status
+        }

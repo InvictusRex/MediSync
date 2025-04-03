@@ -329,18 +329,7 @@
     </style>
   </head>
   <body>
-    <span
-      style="
-        text-align: left;
-        font-size: 1.5rem;
-        font-weight: bold;
-        padding-left: 1.5rem;
-        color: var(--text-primary);
-        margin-top: 1rem;
-        display: inline-block;
-      "
-      >MediSync HMS</span
-    >
+    <span class="brand-title">MediSync HMS</span>
 
     <button
       class="theme-toggle"
@@ -360,27 +349,32 @@
 
     <div class="dashboard-container">
       <aside class="sidebar">
-        <div class="sidebar-header"></div>
+        <div class="sidebar-header">
+          <!-- Clean timestamp display -->
+          <div id="datetime" class="system-time"></div>
+        </div>
 
         <div class="user-info">
-          <div class="user-avatar">I</div>
-          <h3>InvictusRex</h3>
-          <p>Patient ID: P12345</p>
+          <div class="user-avatar" id="userInitial"></div>
+          <h3 id="userName"></h3>
+          <p id="patientId"></p>
         </div>
 
         <ul class="nav-menu">
           <li><a href="#" class="active">Dashboard</a></li>
-          <!--<li><a href="#appointments">My Appointments</a></li>-->
-          <li><a href="patient-profile.html">Profile</a></li>
-          <li><a href="patient-medical-history.html">Medical History</a></li>
-          <li><a href="doctor-list.html">Find Doctors</a></li>
+          <li><a href="#appointments">My Appointments</a></li>
+          <li><a href="#doctors">Find Doctors</a></li>
+          <li><a href="#medical-history">Medical History</a></li>
+          <li><a href="#profile">Profile</a></li>
           <li><a href="../index.html">Logout</a></li>
         </ul>
       </aside>
 
       <main class="main-content">
         <div class="dashboard-header">
-          <h1 class="dashboard-title">Patient Dashboard</h1>
+          <div>
+            <h1 class="dashboard-title">Patient Dashboard</h1>
+          </div>
           <button class="btn-primary" data-modal="bookAppointmentModal">
             Book Appointment
           </button>
@@ -392,7 +386,7 @@
               <h3 class="card-title">Upcoming Appointments</h3>
             </div>
             <div class="card-body">
-              <h2>2</h2>
+              <h2 id="appointmentsCount">0</h2>
             </div>
           </div>
 
@@ -401,7 +395,7 @@
               <h3 class="card-title">Prescriptions</h3>
             </div>
             <div class="card-body">
-              <h2>3</h2>
+              <h2 id="prescriptionsCount">0</h2>
             </div>
           </div>
 
@@ -410,7 +404,7 @@
               <h3 class="card-title">Lab Reports</h3>
             </div>
             <div class="card-body">
-              <h2>5</h2>
+              <h2 id="labReportsCount">0</h2>
             </div>
           </div>
         </div>
@@ -429,17 +423,8 @@
                   <th>Actions</th>
                 </tr>
               </thead>
-              <tbody>
-                <tr>
-                  <td>2025-03-20</td>
-                  <td>Dr. John Smith</td>
-                  <td>Regular Checkup</td>
-                  <td>
-                    <button class="btn-primary" data-modal="viewHistoryModal">
-                      View Details
-                    </button>
-                  </td>
-                </tr>
+              <tbody id="medicalHistoryTable">
+                <!-- Dynamically populated by JavaScript -->
               </tbody>
             </table>
           </div>
@@ -490,6 +475,13 @@
     </div>
 
     <script>
+      // Current Date and Time (UTC): 2025-04-03 18:15:23
+      // Current User's Login: InvictusRex
+
+      // Constants
+      const API_BASE_URL = "http://localhost:8000"; // FastAPI server URL
+
+      // Theme toggle functionality
       function toggleTheme() {
         const body = document.body;
         if (body.hasAttribute("data-theme")) {
@@ -512,6 +504,185 @@
           button.closest(".modal").style.display = "none";
         });
       });
+
+      // Load dashboard data
+      async function loadDashboardData() {
+        try {
+          const patientId = localStorage.getItem("userId");
+          if (!patientId) {
+            window.location.href = "../index.html";
+            return;
+          }
+
+          // Simple fetch without token
+          const response = await fetch(
+            `${API_BASE_URL}/api/patient-dashboard/${patientId}`
+          );
+
+          if (!response.ok) {
+            throw new Error("Failed to load dashboard data");
+          }
+
+          const data = await response.json();
+
+          // Update patient info
+          document.getElementById("patientName").textContent =
+            data.patient_info.name;
+          document.getElementById(
+            "patientId"
+          ).textContent = `Patient ID: ${data.patient_info.id}`;
+
+          // Update medical history table
+          const historyTable = document.getElementById("medicalHistoryTable");
+          historyTable.innerHTML = "";
+
+          data.recent_appointments.forEach((appointment) => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+                      <td>${new Date(
+                        appointment.appointment_time
+                      ).toLocaleString()}</td>
+                      <td>${appointment.doctor.name}</td>
+                      <td>${appointment.status}</td>
+                      <td>
+                          <button class="btn-primary" onclick="viewAppointmentDetails(${
+                            appointment.id
+                          })">
+                              View Details
+                          </button>
+                      </td>
+                  `;
+            historyTable.appendChild(row);
+          });
+
+          // Update counts
+          document.getElementById("upcomingAppointmentsCount").textContent =
+            data.recent_appointments.filter(
+              (app) => app.status === "pending"
+            ).length;
+        } catch (error) {
+          console.error("Error loading dashboard data:", error);
+          alert(
+            "Failed to load dashboard data. Please refresh the page or try again later."
+          );
+        }
+      }
+
+      function loadDepartments() {
+        fetch(`${API_BASE_URL}/api/departments`)
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json();
+          })
+          .then((data) => {
+            console.log("Departments data:", data);
+
+            const departmentSelect = document.getElementById("department");
+            departmentSelect.innerHTML =
+              '<option value="">Select Department</option>';
+
+            data.forEach((dept) => {
+              const option = document.createElement("option");
+              option.value = dept;
+              option.textContent = dept;
+              departmentSelect.appendChild(option);
+            });
+          })
+          .catch((error) => {
+            console.error("Error loading departments:", error);
+            alert(`Failed to load departments: ${error.message}`);
+          });
+      }
+
+      // Load doctors for selected department
+      async function loadDoctors(department) {
+        try {
+          const response = await fetch(
+            `${API_BASE_URL}/api/doctors?department=${department}`
+          );
+
+          if (!response.ok) {
+            throw new Error("Failed to load doctors");
+          }
+
+          const doctors = await response.json();
+          const doctorSelect = document.getElementById("doctor");
+          doctorSelect.innerHTML = '<option value="">Select Doctor</option>';
+
+          doctors.forEach((doctor) => {
+            const option = document.createElement("option");
+            option.value = doctor.id;
+            option.textContent = doctor.name;
+            doctorSelect.appendChild(option);
+          });
+        } catch (error) {
+          console.error("Error loading doctors:", error);
+          alert("Failed to load doctors. Please try again later.");
+        }
+      }
+
+      // Handle appointment booking
+      async function handleAppointmentSubmit(event) {
+        event.preventDefault();
+
+        const appointmentData = {
+          patient_id: parseInt(localStorage.getItem("userId")),
+          doctor_id: parseInt(document.getElementById("doctor").value),
+          appointment_time: new Date(
+            document.getElementById("appointmentDate").value
+          ).toISOString(),
+          status: "pending",
+        };
+
+        try {
+          const response = await fetch(`${API_BASE_URL}/appointments/`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(appointmentData),
+          });
+
+          if (!response.ok) {
+            throw new Error("Failed to book appointment");
+          }
+
+          alert("Appointment booked successfully!");
+          document.getElementById("appointmentModal").style.display = "none";
+          loadDashboardData(); // Refresh dashboard data
+        } catch (error) {
+          console.error("Error booking appointment:", error);
+          alert("Failed to book appointment. Please try again.");
+        }
+      }
+
+      // Initialize page
+      document.addEventListener("DOMContentLoaded", () => {
+        loadDashboardData();
+        loadDepartments();
+
+        // Add department change listener
+        document
+          .getElementById("department")
+          .addEventListener("change", (e) => {
+            if (e.target.value) {
+              loadDoctors(e.target.value);
+            }
+          });
+
+        // Add form submit listener
+        document
+          .getElementById("appointmentForm")
+          .addEventListener("submit", handleAppointmentSubmit);
+      });
+
+      // Handle logout
+      function handleLogout() {
+        localStorage.removeItem("userId");
+        window.location.href = "../index.html";
+      }
     </script>
   </body>
 </html>
