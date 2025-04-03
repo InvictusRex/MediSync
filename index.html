@@ -399,13 +399,12 @@
           medical fields, they ensure personalized and effective treatment for
           every patient.
         </p>
-        <a
-          href="./pages/doctor-list.html"
-          onclick="console.log('Navigating to doctor list');"
-          style="text-decoration: none"
+        <button
+          onclick="() => { window.open('./pages/doctor-list.html', '_self')}"
+          class="doctor_list"
         >
-          <button class="doctor_list">Our Specialized Team of Doctors</button>
-        </a>
+          Our Specialized Team of Doctors
+        </button>
       </section>
 
       <section>
