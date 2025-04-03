@@ -1,0 +1,66 @@
+.auth-container {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.auth-box {
+  background-color: var(--bg-secondary);
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px var(--shadow-color);
+  width: 100%;
+  max-width: 400px;
+}
+
+.auth-box h1 {
+  text-align: center;
+  margin-bottom: 30px;
+  color: var(--primary-color);
+}
+
+.role-selector {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 30px;
+  background-color: var(--bg-primary);
+  padding: 5px;
+  border-radius: 8px;
+}
+
+.role-btn {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  border-radius: 6px;
+  color: var(--text-secondary);
+  transition: all 0.3s;
+}
+
+.role-btn.active {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.auth-form {
+  margin-top: 20px;
+}
+
+.auth-links {
+  text-align: center;
+  margin-top: 20px;
+  color: var(--text-secondary);
+}
+
+.auth-links a {
+  color: var(--primary-color);
+  text-decoration: none;
+}
+
+.auth-links a:hover {
+  text-decoration: underline;
+}

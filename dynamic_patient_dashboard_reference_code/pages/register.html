@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MediSync - Patient Registration</title>
+    <style>
+      :root {
+        --bg-primary: #0a0a0a;
+        --bg-secondary: #141414;
+        --text-primary: #ffffff;
+        --text-secondary: #a1a1a1;
+        --border-color: #2a2a2a;
+        --shadow-color: rgba(0, 0, 0, 0.3);
+        --primary-color: #2196f3;
+        --success-color: #4caf50;
+        --warning-color: #ffc107;
+        --danger-color: #f44336;
+      }
+
+      [data-theme="dark"] {
+        --bg-primary: #ffffff;
+        --bg-secondary: #f3f4f6;
+        --text-primary: #111827;
+        --text-secondary: #4b5563;
+        --border-color: #e5e7eb;
+        --shadow-color: rgba(0, 0, 0, 0.1);
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          "Helvetica Neue", Arial, sans-serif;
+      }
+
+      body {
+        background-color: var(--bg-primary);
+        color: var(--text-primary);
+        line-height: 1.6;
+        transition: background-color 0.3s, color 0.3s;
+      }
+
+      .theme-toggle {
+        position: fixed;
+        top: 1rem;
+        right: 1rem;
+        background: var(--bg-secondary);
+        border: 1px solid var(--border-color);
+        padding: 0.5rem;
+        border-radius: 50%;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: transform 0.2s;
+      }
+
+      .theme-toggle:hover {
+        transform: scale(1.1);
+      }
+
+      .theme-toggle svg {
+        width: 24px;
+        height: 24px;
+        fill: var(--text-primary);
+      }
+
+      .auth-container {
+        min-height: 94vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem;
+      }
+
+      .auth-box {
+        background-color: var(--bg-secondary);
+        padding: 2.5rem;
+        border-radius: 12px;
+        border: 1px solid var(--border-color);
+        width: 100%;
+        max-width: 800px;
+        text-align: center;
+      }
+
+      .auth-box h1 {
+        font-size: 2rem;
+        margin-bottom: 2rem;
+        color: var(--text-primary);
+      }
+
+      .auth-form {
+        text-align: left;
+      }
+
+      .form-group {
+        margin-bottom: 1rem;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        color: var (--text-secondary);
+      }
+
+      .form-group input,
+      .form-group select,
+      .form-group textarea {
+        width: 100%;
+        padding: 1rem;
+        border-radius: 8px;
+        border: 1px solid var(--border-color);
+        background: var(--bg-primary);
+        color: var(--text-primary);
+        font-size: 1rem;
+      }
+
+      .form-group textarea {
+        resize: vertical;
+        min-height: 100px;
+      }
+
+      button[type="submit"] {
+        width: 100%;
+        padding: 1rem;
+        border-radius: 80px;
+        border: none;
+        background: var(--text-primary);
+        color: var(--bg-primary);
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: transform 0.2s, box-shadow 0.2s;
+      }
+
+      button[type="submit"]:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 1px 10px var(--shadow-color);
+      }
+
+      .auth-links {
+        margin-top: 1.5rem;
+        color: var(--text-secondary);
+      }
+
+      .auth-links a {
+        color: var(--primary-color);
+        text-decoration: none;
+      }
+
+      .auth-links a:hover {
+        text-decoration: underline;
+      }
+
+      @media (max-width: 768px) {
+        .auth-box {
+          padding: 1.5rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <span
+      style="
+        text-align: left;
+        font-size: 1.5rem;
+        font-weight: bold;
+        padding-left: 1.5rem;
+        color: var(--text-primary);
+        margin-top: 1rem;
+        display: inline-block;
+      "
+      >MediSync HMS</span
+    >
+
+    <button
+      class="theme-toggle"
+      onclick="toggleTheme()"
+      aria-label="Toggle theme"
+    >
+      <svg
+        class="sun-icon"
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+      >
+        <path
+          d="M12 2.25a.75.75 0 01.75.75v2.25a.75.75 0 01-1.5 0V3a.75.75 0 01.75-.75zM7.5 12a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0zM18.894 6.166a.75.75 0 00-1.06-1.06l-1.591 1.59a.75.75 0 101.06 1.061l1.591-1.59zM21.75 12a.75.75 0 01-.75.75h-2.25a.75.75 0 010-1.5H21a.75.75 0 01.75.75zM17.834 18.894a.75.75 0 001.06-1.06l-1.59-1.591a.75.75 0 10-1.061 1.06l1.59 1.591zM12 18a.75.75 0 01.75.75V21a.75.75 0 01-1.5 0v-2.25A.75.75 0 0112 18zM7.758 17.303a.75.75 0 00-1.061-1.06l-1.591 1.59a.75.75 0 001.06 1.061l1.591-1.59zM6 12a.75.75 0 01-.75.75H3a.75.75 0 010-1.5h2.25A.75.75 0 016 12zM6.697 7.757a.75.75 0 001.06-1.06l-1.59-1.591a.75.75 0 00-1.061 1.06l1.59 1.591z"
+        />
+      </svg>
+    </button>
+
+    <div class="auth-container">
+      <div class="auth-box">
+        <h1>Patient Registration</h1>
+        <form id="registrationForm" class="auth-form">
+          <div class="form-group">
+            <label for="name">Full Name</label>
+            <input type="text" id="name" name="name" required />
+          </div>
+          <div class="form-group">
+            <label for="age">Age</label>
+            <input
+              type="number"
+              id="age"
+              name="age"
+              required
+              min="0"
+              max="150"
+            />
+          </div>
+          <div class="form-group">
+            <label for="bloodGroup">Blood Group</label>
+            <select id="bloodGroup" name="bloodGroup" required>
+              <option value="">Select Blood Group</option>
+              <option value="A+">A+</option>
+              <option value="A-">A-</option>
+              <option value="B+">B+</option>
+              <option value="B-">B-</option>
+              <option value="AB+">AB+</option>
+              <option value="AB-">AB-</option>
+              <option value="O+">O+</option>
+              <option value="O-">O-</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="medicalHistory">Medical History</label>
+            <textarea
+              id="medicalHistory"
+              name="medicalHistory"
+              rows="4"
+            ></textarea>
+          </div>
+          <div class="form-group">
+            <label for="phone">Phone Number</label>
+            <input type="tel" id="phone" name="phone" required />
+          </div>
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" required />
+          </div>
+          <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" required />
+          </div>
+          <div class="form-group">
+            <label for="confirmPassword">Confirm Password</label>
+            <input
+              type="password"
+              id="confirmPassword"
+              name="confirmPassword"
+              required
+            />
+          </div>
+          <button type="submit">Register</button>
+        </form>
+        <p class="auth-links">
+          Already have an account? <a href="login.html">Login here</a>
+        </p>
+      </div>
+    </div>
+
+    <script>
+      function toggleTheme() {
+        const body = document.body;
+        if (body.hasAttribute("data-theme")) {
+          body.removeAttribute("data-theme");
+        } else {
+          body.setAttribute("data-theme", "dark");
+        }
+      }
+
+      document
+        .getElementById("registrationForm")
+        .addEventListener("submit", async (event) => {
+          event.preventDefault();
+          const name = document.getElementById("name").value;
+          const age = document.getElementById("age").value;
+          const bloodGroup = document.getElementById("bloodGroup").value;
+          const medicalHistory =
+            document.getElementById("medicalHistory").value;
+          const phone = document.getElementById("phone").value;
+          const email = document.getElementById("email").value;
+          const password = document.getElementById("password").value;
+          const confirmPassword =
+            document.getElementById("confirmPassword").value;
+
+          if (password !== confirmPassword) {
+            alert("Passwords do not match");
+            return;
+          }
+
+          const response = await fetch("http://localhost:8000/register", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              name,
+              age: parseInt(age),
+              blood_group: bloodGroup, // Changed from bloodGroup
+              medical_history: medicalHistory, // Changed from medicalHistory
+              phone,
+              email,
+              password,
+            }),
+          });
+          const data = await response.json();
+
+          if (response.ok) {
+            alert("Registration successful");
+            // Redirect to login page
+            window.location.href = "login.html";
+          } else {
+            alert(data.detail);
+          }
+        });
+    </script>
+  </body>
+</html>
