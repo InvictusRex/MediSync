@@ -431,13 +431,8 @@
                   <th>Status</th>
                 </tr>
               </thead>
-              <tbody>
-                <tr>
-                  <td>1000</td>
-                  <td>2025-03-20</td>
-                  <td>Dr. John Smith</td>
-                  <td>Pending</td>
-                </tr>
+              <tbody id="recentAppointmentsTable">
+                <!-- Will be filled dynamically by JavaScript -->
               </tbody>
             </table>
           </div>
@@ -491,9 +486,9 @@
       // Function to load dashboard header info
       async function loadDashboardInfo() {
         try {
-          const username = localStorage.getItem("username") || "InvictusRex"; // Fallback to InvictusRex
+          const username = localStorage.getItem("username") || "InvictusRex";
           if (!username) {
-            window.location.href = "../index.html"; // Redirect to login if no username
+            window.location.href = "../index.html";
             return;
           }
 
@@ -506,11 +501,36 @@
 
           const data = await response.json();
 
-          // Update the DOM elements with new format
+          // Update user info
           document.getElementById("userName").textContent = data.name;
-          document.getElementById("patientId").textContent = data.patient_id; // Now includes "Patient ID: " prefix
+          document.getElementById("patientId").textContent = data.patient_id;
           document.getElementById("userAvatar").textContent =
-            data.name[0].toUpperCase(); // First letter of name
+            data.name[0].toUpperCase();
+
+          // Update recent appointments table
+          // Update recent appointments table
+          const tableBody = document.getElementById("recentAppointmentsTable");
+          tableBody.innerHTML = "";
+
+          if (data.recent_appointments && data.recent_appointments.length > 0) {
+            // Changed back to recent_appointments
+            data.recent_appointments.forEach((appointment) => {
+              const row = document.createElement("tr");
+              row.innerHTML = `
+            <td>${appointment.appointment_id}</td>
+            <td>${appointment.date_time}</td>
+            <td>${appointment.doctor}</td>
+            <td>${appointment.status}</td>
+        `;
+              tableBody.appendChild(row);
+            });
+          } else {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+        <td colspan="4" style="text-align: center;">No recent appointments found</td>
+    `;
+            tableBody.appendChild(row);
+          }
         } catch (error) {
           console.error("Error loading dashboard info:", error);
           alert("Failed to load dashboard information");

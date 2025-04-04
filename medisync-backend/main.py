@@ -9,6 +9,7 @@ from crud import patients, doctors, appointments, admins  # Add admins import
 from crud import patient_dashboard_header
 from crud import patient_profiles  # Change from patient_profile to patient_profiles
 from crud import patient_medical_history
+from crud import patient_dashboard
 
 app = FastAPI()
 
@@ -145,14 +146,6 @@ def read_doctor_appointments(
     return appointments.get_doctor_appointments(db, doctor_id, skip, limit)
 
 # Add to your existing endpoints
-@app.get("/patient/dashboard-info/{username}")
-def get_patient_dashboard_info(username: str, db: Session = Depends(get_db)):
-    patient = patient_dashboard_header.get_patient_dashboard_info(db, username)
-    if not patient:
-        raise HTTPException(status_code=404, detail="Patient not found")
-    
-    return patient_dashboard_header.format_dashboard_response(patient)
-
 @app.get("/patient/profile/{username}")
 def get_patient_profile(username: str, db: Session = Depends(get_db)):
     patient = patient_profiles.get_patient_profile(db, username)  # Change to patient_profiles
@@ -168,3 +161,12 @@ def get_medical_history(username: str, db: Session = Depends(get_db)):
     
     appointments = patient_medical_history.get_patient_appointments(db, patient.id)
     return patient_medical_history.format_medical_history_response(patient, appointments)
+
+@app.get("/patient/dashboard-info/{username}", response_model=schemas.DashboardResponse)
+def get_patient_dashboard_info(username: str, db: Session = Depends(get_db)):
+    patient = patient_dashboard.get_patient_dashboard_info(db, username)
+    if not patient:
+        raise HTTPException(status_code=404, detail="Patient not found")
+    
+    recent_appointments = patient_dashboard.get_recent_appointments(db, patient.id)
+    return patient_dashboard.format_dashboard_response(patient, recent_appointments)

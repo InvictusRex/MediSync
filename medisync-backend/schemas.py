@@ -96,3 +96,20 @@ class MedicalHistoryResponse(BaseModel):
 
     class Config:
         from_attributes = True
+
+class DashboardAppointmentResponse(BaseModel):
+    appointment_id: int
+    date_time: str
+    doctor: str
+    status: str
+
+    class Config:
+        from_attributes = True
+
+class DashboardResponse(BaseModel):
+    name: str
+    patient_id: str
+    recent_appointments: List[dict]  # List of recent appointment dictionaries
+
+    class Config:
+        from_attributes = True
