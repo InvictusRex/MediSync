@@ -37,6 +37,7 @@ class PatientResponse(UserBase):
     class Config:
         from_attributes = True
 
+# Updated DoctorResponse to match frontend requirements
 class DoctorResponse(BaseModel):
     id: int
     name: str
@@ -68,20 +69,6 @@ class AppointmentResponse(BaseModel):
     status: str
     patient: PatientResponse
     doctor: DoctorResponse
-
-    class Config:
-        from_attributes = True
-
-class PatientDashboardInfo(BaseModel):
-    id: int
-    name: str
-
-    class Config:
-        from_attributes = True
-
-class PatientDashboardResponse(BaseModel):
-    patient_info: PatientDashboardInfo
-    recent_appointments: List[AppointmentResponse]
 
     class Config:
         from_attributes = True
