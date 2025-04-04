@@ -79,3 +79,20 @@ class PatientProfileResponse(BaseModel):
 
     class Config:
         from_attributes = True
+
+class MedicalHistoryAppointmentResponse(BaseModel):
+    appointment_id: int
+    date_time: str
+    doctor: str
+    status: str
+
+    class Config:
+        from_attributes = True
+
+class MedicalHistoryResponse(BaseModel):
+    name: str
+    patient_id: str
+    appointments: List[dict]  # List of appointment dictionaries
+
+    class Config:
+        from_attributes = True

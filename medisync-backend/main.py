@@ -8,6 +8,7 @@ from database import SessionLocal
 from crud import patients, doctors, appointments, admins  # Add admins import
 from crud import patient_dashboard_header
 from crud import patient_profiles  # Change from patient_profile to patient_profiles
+from crud import patient_medical_history
 
 app = FastAPI()
 
@@ -158,3 +159,12 @@ def get_patient_profile(username: str, db: Session = Depends(get_db)):
     if not patient:
         raise HTTPException(status_code=404, detail="Patient not found")
     return patient_profiles.format_profile_response(patient)  # Change to patient_profiles
+
+@app.get("/patient/medical-history/{username}")
+def get_medical_history(username: str, db: Session = Depends(get_db)):
+    patient = patient_medical_history.get_patient_medical_history_info(db, username)
+    if not patient:
+        raise HTTPException(status_code=404, detail="Patient not found")
+    
+    appointments = patient_medical_history.get_patient_appointments(db, patient.id)
+    return patient_medical_history.format_medical_history_response(patient, appointments)

@@ -363,10 +363,10 @@
         <div class="sidebar-header"></div>
 
         <div class="user-info">
-          <div class="user-avatar">I</div>
-          <h3>InvictusRex</h3>
-          <p>Patient ID: P12345</p>
-        </div>
+          <div class="user-avatar" id="userAvatar"></div>
+          <h3 id="userName"></h3>
+          <p id="patientId"></p>
+      </div>
 
         <ul class="nav-menu">
             <li><a href="patient-dashboard.html">Dashboard</a></li>
@@ -395,23 +395,14 @@
             <table class="data-table">
               <thead>
                 <tr>
-                  <th>Date</th>
+                  <th>Appointment ID</th>
+                  <th>Date / Time</th>
                   <th>Doctor</th>
-                  <th>Diagnosis</th>
-                  <th>Actions</th>
+                  <th>Status</th>
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td>2025-03-20</td>
-                  <td>Dr. John Smith</td>
-                  <td>Regular Checkup</td>
-                  <td>
-                    <button class="btn-primary" data-modal="viewHistoryModal">
-                      View Details
-                    </button>
-                  </td>
-                </tr>
+                <!-- Dynamic content will be loaded here -->
               </tbody>
             </table>
           </div>
@@ -471,6 +462,52 @@
         }
       }
 
+      async function loadMedicalHistoryInfo() {
+    try {
+        const username = localStorage.getItem("username");
+        if (!username) {
+            window.location.href = "../index.html";
+            return;
+        }
+
+        const response = await fetch(`http://localhost:8000/patient/medical-history/${username}`);
+        if (!response.ok) {
+            throw new Error("Failed to fetch medical history info");
+        }
+
+        const data = await response.json();
+
+        // Remove this line as we don't have header anymore
+        // document.querySelector(".header").textContent = data.header;
+
+        // Update sidebar info
+        document.getElementById("userName").textContent = data.name;
+        document.getElementById("patientId").textContent = data.patient_id;
+        document.getElementById("userAvatar").textContent = data.name[0].toUpperCase();
+
+        // Update appointments table
+        const tableBody = document.querySelector(".data-table tbody");
+        tableBody.innerHTML = ''; // Clear existing rows
+
+        data.appointments.forEach(appointment => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${appointment.appointment_id}</td>
+                <td>${appointment.date_time}</td>
+                <td>${appointment.doctor}</td>
+                <td>${appointment.status}</td>
+            `;
+            tableBody.appendChild(row);
+        });
+
+    } catch (error) {
+        console.error("Error loading medical history info:", error);
+        alert("Failed to load medical history information");
+    }
+}
+
+document.addEventListener("DOMContentLoaded", loadMedicalHistoryInfo);
+
       // Modal functionality
       document.querySelectorAll("[data-modal]").forEach((button) => {
         button.addEventListener("click", () => {
@@ -487,3 +524,4 @@
     </script>
   </body>
 </html>
+ 
