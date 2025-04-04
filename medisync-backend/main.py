@@ -6,6 +6,8 @@ from typing import Optional, List
 import models, schemas
 from database import SessionLocal
 from crud import patients, doctors, appointments, admins  # Add admins import
+from crud import patient_dashboard_header
+
 app = FastAPI()
 
 # CORS middleware configuration
@@ -139,3 +141,12 @@ def read_doctor_appointments(
     db: Session = Depends(get_db)
 ):
     return appointments.get_doctor_appointments(db, doctor_id, skip, limit)
+
+# Add to your existing endpoints
+@app.get("/patient/dashboard-info/{username}")
+def get_patient_dashboard_info(username: str, db: Session = Depends(get_db)):
+    patient = patient_dashboard_header.get_patient_dashboard_info(db, username)
+    if not patient:
+        raise HTTPException(status_code=404, detail="Patient not found")
+    
+    return patient_dashboard_header.format_dashboard_response(patient)
