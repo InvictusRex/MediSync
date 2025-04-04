@@ -506,9 +506,9 @@
 
           const data = await response.json();
 
-          // Update the DOM elements
+          // Update the DOM elements with new format
           document.getElementById("userName").textContent = data.name;
-          document.getElementById("patientId").textContent = data.patient_id;
+          document.getElementById("patientId").textContent = data.patient_id; // Now includes "Patient ID: " prefix
           document.getElementById("userAvatar").textContent =
             data.name[0].toUpperCase(); // First letter of name
         } catch (error) {
@@ -516,7 +516,6 @@
           alert("Failed to load dashboard information");
         }
       }
-
       // Load dashboard info when page loads
       document.addEventListener("DOMContentLoaded", loadDashboardInfo);
 

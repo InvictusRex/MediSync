@@ -264,9 +264,9 @@
         <div class="sidebar-header"></div>
 
         <div class="user-info">
-          <div class="user-avatar">I</div>
-          <h3>InvictusRex</h3>
-          <p>Patient ID: P12345</p>
+          <div class="user-avatar" id="userAvatar"></div>
+          <h3 id="userName"></h3>
+          <p id="patientId"></p>
         </div>
 
         <ul class="nav-menu">
@@ -289,42 +289,34 @@
             <div class="profile-info">
               <div class="info-item">
                 <div class="info-label">Patient ID</div>
-                <div class="info-value">P12345</div>
+                <div class="info-value" id="profilePatientId"></div>
               </div>
               <div class="info-item">
                 <div class="info-label">Full Name</div>
-                <div class="info-value">InvictusRex</div>
+                <div class="info-value" id="profileName"></div>
               </div>
               <div class="info-item">
                 <div class="info-label">Age</div>
-                <div class="info-value">28</div>
+                <div class="info-value" id="profileAge"></div>
               </div>
               <div class="info-item">
                 <div class="info-label">Blood Group</div>
-                <div class="info-value">O+</div>
+                <div class="info-value" id="profileBloodGroup"></div>
               </div>
               <div class="info-item">
                 <div class="info-label">Phone Number</div>
-                <div class="info-value">+1 (555) 123-4567</div>
+                <div class="info-value" id="profilePhone"></div>
               </div>
               <div class="info-item">
                 <div class="info-label">Email</div>
-                <div class="info-value">invictus@example.com</div>
+                <div class="info-value" id="profileEmail"></div>
               </div>
             </div>
           </div>
 
           <div class="profile-section">
             <h3>Medical History</h3>
-            <div class="medical-history">
-              <p>
-                Patient has a history of mild hypertension, controlled with
-                medication. No known allergies. Regular physical activity and
-                maintains a healthy diet. Last general checkup was performed on
-                March 20, 2025, with all vital signs within normal ranges.
-                Scheduled for annual follow-up in March 2026.
-              </p>
-            </div>
+            <div class="medical-history" id="profileMedicalHistory"></div>
           </div>
         </div>
       </main>
@@ -339,6 +331,56 @@
           body.setAttribute("data-theme", "dark");
         }
       }
+
+      async function loadProfile() {
+        try {
+          const username = localStorage.getItem("username");
+          if (!username) {
+            window.location.href = "../index.html";
+            return;
+          }
+
+          const response = await fetch(
+            `http://localhost:8000/patient/profile/${username}`
+          );
+          if (!response.ok) {
+            throw new Error("Failed to fetch profile info");
+          }
+
+          const data = await response.json();
+
+          // Update sidebar user info
+          document.getElementById("userName").textContent =
+            data.patient_info.name;
+          document.getElementById(
+            "patientId"
+          ).textContent = `Patient ID: ${data.patient_info.patient_id}`;
+          document.getElementById("userAvatar").textContent =
+            data.patient_info.name[0].toUpperCase();
+
+          // Update profile information
+          document.getElementById("profilePatientId").textContent =
+            data.patient_info.patient_id;
+          document.getElementById("profileName").textContent =
+            data.patient_info.name;
+          document.getElementById("profileAge").textContent =
+            data.patient_info.age;
+          document.getElementById("profileBloodGroup").textContent =
+            data.patient_info.blood_group;
+          document.getElementById("profilePhone").textContent =
+            data.patient_info.phone;
+          document.getElementById("profileEmail").textContent =
+            data.patient_info.email;
+          document.getElementById("profileMedicalHistory").textContent =
+            data.patient_info.medical_history;
+        } catch (error) {
+          console.error("Error loading profile:", error);
+          alert("Failed to load profile information");
+        }
+      }
+
+      // Load profile when page loads
+      document.addEventListener("DOMContentLoaded", loadProfile);
     </script>
   </body>
 </html>

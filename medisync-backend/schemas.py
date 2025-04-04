@@ -72,3 +72,10 @@ class AppointmentResponse(BaseModel):
 
     class Config:
         from_attributes = True
+
+class PatientProfileResponse(BaseModel):
+    header: str
+    patient_info: dict
+
+    class Config:
+        from_attributes = True

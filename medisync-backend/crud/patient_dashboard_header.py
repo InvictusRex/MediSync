@@ -18,7 +18,7 @@ def format_dashboard_response(patient: models.Patient):
     """
     return {
         "name": patient.name,
-        "patient_id": f"P{patient.id:05d}",  # Format: P00001, P00002, etc.
+        "patient_id": f"Patient ID: P{patient.id:05d}",  # Updated format
         "age": patient.age,
         "blood_group": patient.blood_group,
     }
