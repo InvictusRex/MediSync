@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from typing import Optional, List
 from datetime import datetime
 
@@ -18,6 +18,14 @@ class DoctorCreate(UserBase):
     department: str
     description: str
     image_url: Optional[str] = "https://placehold.co/300x200"
+
+class DoctorUpdate(BaseModel):
+    name: Optional[str] = None
+    phone: Optional[str] = None
+    email: Optional[str] = None
+    department: Optional[str] = None
+    description: Optional[str] = None
+    image_url: Optional[str] = None
 
 class AdminCreate(UserBase):
     password: str
@@ -117,6 +125,19 @@ class DashboardResponse(BaseModel):
 class AdminHeaderResponse(BaseModel):
     name: str
     admin_id: str
+
+    class Config:
+        from_attributes = True
+
+# Add this new schema for admin dashboard
+class AdminDoctorResponse(BaseModel):
+    doctor_id: str
+    name: str
+    department: str
+    description: str
+    email: str
+    phone: str
+    image_url: Optional[str] = "https://placehold.co/300x200"
 
     class Config:
         from_attributes = True

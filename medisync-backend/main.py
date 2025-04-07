@@ -11,6 +11,7 @@ from crud import patient_profiles  # Change from patient_profile to patient_prof
 from crud import patient_medical_history
 from crud import patient_dashboard
 from crud import admin_dashboard_header
+from crud import admin_dashboard
 
 app = FastAPI()
 
@@ -26,6 +27,7 @@ app.add_middleware(
 # Security
 security = HTTPBearer()
 
+
 # Database dependency
 def get_db():
     db = SessionLocal()
@@ -34,10 +36,11 @@ def get_db():
     finally:
         db.close()
 
+
 # Authentication dependency
 async def get_current_user(
     credentials: HTTPAuthorizationCredentials = Security(security),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
 ):
     try:
         if not credentials:
@@ -46,26 +49,28 @@ async def get_current_user(
     except Exception:
         raise HTTPException(status_code=401, detail="Invalid authentication")
 
+
 # API endpoints for doctor-list frontend
 @app.get("/api/departments", response_model=List[str])
 async def get_departments(
-    db: Session = Depends(get_db),
-    token: str = Depends(get_current_user)
+    db: Session = Depends(get_db), token: str = Depends(get_current_user)
 ):
     return doctors.get_all_departments(db)
+
 
 @app.get("/api/doctors", response_model=List[schemas.DoctorResponse])
 async def read_doctors(
     department: Optional[str] = None,
     search: Optional[str] = None,
     db: Session = Depends(get_db),
-    token: str = Depends(get_current_user)
+    token: str = Depends(get_current_user),
 ):
     if department:
         return doctors.get_doctors_by_department(db, department)
     elif search:
         return doctors.search_doctors(db, search)
     return doctors.get_doctors(db, skip=0, limit=100)
+
 
 # Your existing endpoints remain unchanged
 @app.post("/patients/register", response_model=schemas.PatientResponse)
@@ -76,6 +81,7 @@ def register_patient(patient: schemas.PatientCreate, db: Session = Depends(get_d
         raise HTTPException(status_code=400, detail="Phone number already registered")
     return patients.create_patient(db, patient)
 
+
 @app.post("/doctors/register", response_model=schemas.DoctorResponse)
 def register_doctor(doctor: schemas.DoctorCreate, db: Session = Depends(get_db)):
     if doctors.get_doctor_by_email(db, doctor.email):
@@ -84,6 +90,7 @@ def register_doctor(doctor: schemas.DoctorCreate, db: Session = Depends(get_db))
         raise HTTPException(status_code=400, detail="Phone number already registered")
     return doctors.create_doctor(db, doctor)
 
+
 @app.post("/login")
 def login_user(user: schemas.UserLogin, db: Session = Depends(get_db)):
     if user.user_type == "patient":
@@ -91,11 +98,13 @@ def login_user(user: schemas.UserLogin, db: Session = Depends(get_db)):
     elif user.user_type == "doctor":
         db_user = doctors.verify_doctor(db, user.identifier, user.password)
     elif user.user_type == "admin":  # Add admin case
-        db_user = admins.verify_admin(db, user.identifier, user.password)  # You'll need to import admins from crud
+        db_user = admins.verify_admin(
+            db, user.identifier, user.password
+        )  # You'll need to import admins from crud
     else:
         raise HTTPException(
-            status_code=400, 
-            detail="Invalid user type. Must be 'patient', 'doctor', or 'admin'"
+            status_code=400,
+            detail="Invalid user type. Must be 'patient', 'doctor', or 'admin'",
         )
 
     if not db_user:
@@ -109,9 +118,13 @@ def login_user(user: schemas.UserLogin, db: Session = Depends(get_db)):
             "name": db_user.name,
             "email": db_user.email,
             "type": user.user_type,
-            "department": getattr(db_user, 'department', None)  # Add department for admin/doctor
-        }
+            "department": getattr(
+                db_user, "department", None
+            ),  # Add department for admin/doctor
+        },
     }
+
+
 # Keeping other endpoints but removing duplicates
 @app.get("/doctors/{doctor_id}", response_model=schemas.DoctorResponse)
 def read_doctor(doctor_id: int, db: Session = Depends(get_db)):
@@ -120,61 +133,112 @@ def read_doctor(doctor_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Doctor not found")
     return doctor
 
+
 # Appointment endpoints remain unchanged
 @app.post("/appointments/", response_model=schemas.AppointmentResponse)
 def create_appointment(
-    appointment: schemas.AppointmentCreate,
-    db: Session = Depends(get_db)
+    appointment: schemas.AppointmentCreate, db: Session = Depends(get_db)
 ):
     return appointments.create_appointment(db, appointment)
 
-@app.get("/patients/{patient_id}/appointments", response_model=List[schemas.AppointmentResponse])
+
+@app.get(
+    "/patients/{patient_id}/appointments",
+    response_model=List[schemas.AppointmentResponse],
+)
 def read_patient_appointments(
-    patient_id: int,
-    skip: int = 0,
-    limit: int = 10,
-    db: Session = Depends(get_db)
+    patient_id: int, skip: int = 0, limit: int = 10, db: Session = Depends(get_db)
 ):
     return appointments.get_patient_appointments(db, patient_id, skip, limit)
 
-@app.get("/doctors/{doctor_id}/appointments", response_model=List[schemas.AppointmentResponse])
+
+@app.get(
+    "/doctors/{doctor_id}/appointments",
+    response_model=List[schemas.AppointmentResponse],
+)
 def read_doctor_appointments(
-    doctor_id: int,
-    skip: int = 0,
-    limit: int = 10,
-    db: Session = Depends(get_db)
+    doctor_id: int, skip: int = 0, limit: int = 10, db: Session = Depends(get_db)
 ):
     return appointments.get_doctor_appointments(db, doctor_id, skip, limit)
+
 
 # Add to your existing endpoints
 @app.get("/patient/profile/{username}")
 def get_patient_profile(username: str, db: Session = Depends(get_db)):
-    patient = patient_profiles.get_patient_profile(db, username)  # Change to patient_profiles
+    patient = patient_profiles.get_patient_profile(
+        db, username
+    )  # Change to patient_profiles
     if not patient:
         raise HTTPException(status_code=404, detail="Patient not found")
-    return patient_profiles.format_profile_response(patient)  # Change to patient_profiles
+    return patient_profiles.format_profile_response(
+        patient
+    )  # Change to patient_profiles
+
 
 @app.get("/patient/medical-history/{username}")
 def get_medical_history(username: str, db: Session = Depends(get_db)):
     patient = patient_medical_history.get_patient_medical_history_info(db, username)
     if not patient:
         raise HTTPException(status_code=404, detail="Patient not found")
-    
+
     appointments = patient_medical_history.get_patient_appointments(db, patient.id)
-    return patient_medical_history.format_medical_history_response(patient, appointments)
+    return patient_medical_history.format_medical_history_response(
+        patient, appointments
+    )
+
 
 @app.get("/patient/dashboard-info/{username}", response_model=schemas.DashboardResponse)
 def get_patient_dashboard_info(username: str, db: Session = Depends(get_db)):
     patient = patient_dashboard.get_patient_dashboard_info(db, username)
     if not patient:
         raise HTTPException(status_code=404, detail="Patient not found")
-    
+
     recent_appointments = patient_dashboard.get_recent_appointments(db, patient.id)
     return patient_dashboard.format_dashboard_response(patient, recent_appointments)
 
+
+# Admin dashboard header info
 @app.get("/admin/dashboard-info/{admin_id}", response_model=schemas.AdminHeaderResponse)
 def get_admin_dashboard_info(admin_id: int, db: Session = Depends(get_db)):
     admin = admin_dashboard_header.get_admin_header_info(db, admin_id)
     if not admin:
         raise HTTPException(status_code=404, detail="Admin not found")
     return admin
+
+
+# Get recent doctors list
+@app.get("/admin/recent-doctors")
+def get_recent_doctors_endpoint(db: Session = Depends(get_db)):
+    return admin_dashboard.get_recent_doctors(db)
+
+
+@app.get("/admin/doctor/{doctor_id}")
+def get_doctor_endpoint(doctor_id: int, db: Session = Depends(get_db)):
+    doctor = doctors.get_doctor(db, doctor_id)
+    if not doctor:
+        raise HTTPException(status_code=404, detail="Doctor not found")
+    return doctor
+
+
+# Update doctor information
+@app.put("/admin/doctor/{doctor_id}", response_model=schemas.DoctorResponse)
+def update_doctor_endpoint(
+    doctor_id: int, doctor_data: schemas.DoctorCreate, db: Session = Depends(get_db)
+):
+    return admin_dashboard.edit_doctor(db, doctor_id, doctor_data)
+
+
+# Delete doctor
+@app.delete("/admin/doctor/{doctor_id}")
+def remove_doctor_endpoint(doctor_id: int, db: Session = Depends(get_db)):
+    return admin_dashboard.remove_doctor(db, doctor_id)
+
+
+# Add new doctor
+@app.post("/doctors/register", response_model=schemas.DoctorResponse)
+def register_doctor(doctor: schemas.DoctorCreate, db: Session = Depends(get_db)):
+    if doctors.get_doctor_by_email(db, doctor.email):
+        raise HTTPException(status_code=400, detail="Email already registered")
+    if doctors.get_doctor_by_phone(db, doctor.phone):
+        raise HTTPException(status_code=400, detail="Phone number already registered")
+    return doctors.create_doctor(db, doctor)

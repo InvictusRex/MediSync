@@ -44,11 +44,31 @@ def get_doctors(db: Session, skip: int = 0, limit: int = 100) -> List[models.Doc
     except Exception as e:
         raise HTTPException(status_code=500, detail="Error retrieving doctors")
 
+def format_doctor_id(doctor_id: int) -> str:
+    """
+    Format doctor ID to display format (e.g., D000001)
+    """
+    return f"D{doctor_id:06d}"
+
+def format_doctor_response(doctor: models.Doctor) -> dict:
+    """
+    Format doctor data for admin dashboard display
+    """
+    return {
+        "doctor_id": format_doctor_id(doctor.id),
+        "name": f"Dr. {doctor.name}",
+        "department": doctor.department,
+        "email": doctor.email,
+        "phone": doctor.phone,
+        "description": doctor.description,
+        "image_url": doctor.image_url
+    }
+
 def get_doctor(db: Session, doctor_id: int):
     doctor = db.query(models.Doctor).filter(models.Doctor.id == doctor_id).first()
     if not doctor:
         raise HTTPException(status_code=404, detail="Doctor not found")
-    return doctor
+    return format_doctor_response(doctor)
 
 def get_doctors_by_department(db: Session, department: str) -> List[models.Doctor]:
     try:
