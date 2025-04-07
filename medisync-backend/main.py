@@ -10,6 +10,7 @@ from crud import patient_dashboard_header
 from crud import patient_profiles  # Change from patient_profile to patient_profiles
 from crud import patient_medical_history
 from crud import patient_dashboard
+from crud import admin_dashboard_header
 
 app = FastAPI()
 
@@ -170,3 +171,10 @@ def get_patient_dashboard_info(username: str, db: Session = Depends(get_db)):
     
     recent_appointments = patient_dashboard.get_recent_appointments(db, patient.id)
     return patient_dashboard.format_dashboard_response(patient, recent_appointments)
+
+@app.get("/admin/dashboard-info/{admin_id}", response_model=schemas.AdminHeaderResponse)
+def get_admin_dashboard_info(admin_id: int, db: Session = Depends(get_db)):
+    admin = admin_dashboard_header.get_admin_header_info(db, admin_id)
+    if not admin:
+        raise HTTPException(status_code=404, detail="Admin not found")
+    return admin

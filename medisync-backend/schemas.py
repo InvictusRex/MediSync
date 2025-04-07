@@ -113,3 +113,10 @@ class DashboardResponse(BaseModel):
 
     class Config:
         from_attributes = True
+
+class AdminHeaderResponse(BaseModel):
+    name: str
+    admin_id: str
+
+    class Config:
+        from_attributes = True

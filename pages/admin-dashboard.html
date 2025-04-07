@@ -348,9 +348,11 @@
     <div class="dashboard-container">
       <aside class="sidebar">
         <div class="user-info">
-          <div class="user-avatar">I</div>
-          <h3>InvictusRex</h3>
-          <p>admin@hospital.com</p>
+          <div class="user-avatar" id="userAvatar">
+            <!-- Will be filled by JS -->
+          </div>
+          <h3 id="userName">Loading...</h3>
+          <p id="adminId">Loading...</p>
         </div>
 
         <ul class="nav-menu">
@@ -491,6 +493,36 @@
           button.closest(".modal").style.display = "none";
         });
       });
+
+      // Fetch admin data using user_id from localStorage
+      async function fetchAdminInfo() {
+        const adminId = localStorage.getItem("user_id");
+        if (!adminId) {
+          console.warn("⚠️ Admin ID not found in localStorage");
+          return;
+        }
+
+        try {
+          const response = await fetch(
+            `http://127.0.0.1:8000/admin/dashboard-info/${adminId}`
+          );
+          const data = await response.json();
+
+          // Make sure all elements exist before assigning values
+          const nameElem = document.querySelector("#userName");
+          const idElem = document.querySelector("#adminId");
+          const avatarElem = document.querySelector("#userAvatar");
+
+          if (nameElem) nameElem.textContent = data.name || "Unknown Admin";
+          if (idElem) idElem.textContent = data.admin_id || "No ID";
+          if (avatarElem)
+            avatarElem.textContent = (data.name || "A").charAt(0).toUpperCase();
+        } catch (error) {
+          console.error("Failed to fetch admin info:", error);
+        }
+      }
+
+      document.addEventListener("DOMContentLoaded", fetchAdminInfo);
     </script>
   </body>
 </html>
