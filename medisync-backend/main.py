@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session
 from fastapi.middleware.cors import CORSMiddleware
 from typing import Optional, List
 import models, schemas
+from datetime import datetime
 from database import SessionLocal
 from crud import patients, doctors, appointments, admins  # Add admins import
 from crud import patient_dashboard_header
@@ -14,6 +15,8 @@ from crud import admin_dashboard_header
 from crud import admin_dashboard
 from crud import admin_doctors 
 from crud import admin_patients
+from crud import admin_appointments
+from schemas import AdminAppointmentResponse, AppointmentCreate, AppointmentUpdate
 
 app = FastAPI()
 
@@ -279,3 +282,41 @@ def remove_patient_endpoint(patient_id: int, db: Session = Depends(get_db)):
     if "error" in result:
         raise HTTPException(status_code=404, detail=result["error"])
     return result
+
+@app.get("/admin/appointments-list", response_model=List[AdminAppointmentResponse])
+def get_all_appointments_endpoint(db: Session = Depends(get_db)):
+    return admin_appointments.get_all_appointments(db)
+
+@app.get("/admin/appointment/{appointment_id}", response_model=AdminAppointmentResponse)
+def get_appointment_endpoint(appointment_id: int, db: Session = Depends(get_db)):
+    appointment = admin_appointments.get_appointment_by_id(db, appointment_id)
+    if appointment is None:
+        raise HTTPException(status_code=404, detail="Appointment not found")
+    return appointment
+
+@app.post("/admin/appointment", response_model=AdminAppointmentResponse)
+def create_appointment_endpoint(appointment: AppointmentCreate, db: Session = Depends(get_db)):
+    try:
+        return admin_appointments.create_appointment(db, appointment)
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+@app.put("/admin/appointment/{appointment_id}", response_model=AdminAppointmentResponse)
+def update_appointment_endpoint(
+    appointment_id: int, appointment_data: AppointmentUpdate, db: Session = Depends(get_db)
+):
+    appointment = admin_appointments.edit_appointment(db, appointment_id, appointment_data)
+    if appointment is None:
+        raise HTTPException(status_code=404, detail="Appointment not found")
+    return appointment
+
+@app.delete("/admin/appointment/{appointment_id}")
+def remove_appointment_endpoint(appointment_id: int, db: Session = Depends(get_db)):
+    result = admin_appointments.remove_appointment(db, appointment_id)
+    if "error" in result:
+        raise HTTPException(status_code=404, detail=result["error"])
+    return result
+
+@app.get("/admin/available-doctors/{appointment_time}")
+def get_available_doctors_endpoint(appointment_time: datetime, db: Session = Depends(get_db)):
+    return admin_appointments.get_available_doctors(db, appointment_time)

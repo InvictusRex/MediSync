@@ -356,72 +356,44 @@
         </div>
 
         <ul class="nav-menu">
-          <li><a href="#" class="active">Dashboard</a></li>
+          <li><a href="./admin-dashboard.html">Dashboard</a></li>
           <li><a href="./admin-doctors.html">Doctors</a></li>
           <li><a href="./admin-patient.html">Patients</a></li>
-          <li><a href="./admin-appointment.html">Appointments</a></li>
+          <li><a href="#" class="active">Appointments</a></li>
           <li><a href="../index.html">Logout</a></li>
         </ul>
       </aside>
 
       <main class="main-content">
         <div class="dashboard-header">
-          <h1 class="dashboard-title">Admin Dashboard</h1>
+          <h1 class="dashboard-title">Appointment Information</h1>
           <button
             class="btn-primary"
-            id="addDoctorBtn"
-            data-modal="addDoctorModal"
+            id="addAppointmentBtn"
+            data-modal="addAppointmentModal"
           >
-            Add New Doctor
+            Add New Appointment
           </button>
-        </div>
-
-        <div class="dashboard-cards">
-          <div class="card">
-            <div class="card-header">
-              <h3 class="card-title">Total Doctors</h3>
-            </div>
-            <div class="card-body">
-              <h2>42</h2>
-            </div>
-          </div>
-
-          <div class="card">
-            <div class="card-header">
-              <h3 class="card-title">Total Patients</h3>
-            </div>
-            <div class="card-body">
-              <h2>156</h2>
-            </div>
-          </div>
-
-          <div class="card">
-            <div class="card-header">
-              <h3 class="card-title">Total Appointments</h3>
-            </div>
-            <div class="card-body">
-              <h2>28</h2>
-            </div>
-          </div>
         </div>
 
         <div class="card">
           <div class="card-header">
-            <h3 class="card-title">Recent Doctors</h3>
+            <h3 class="card-title">Appointment List</h3>
           </div>
           <div class="table-responsive">
             <table class="data-table">
               <thead>
                 <tr>
-                  <th>Doctor ID</th>
-                  <th>Name</th>
-                  <th>Department</th>
-                  <th>Email</th>
-                  <th>Phone</th>
+                  <th>Appointment ID</th>
+                  <th>Date / Time</th>
+                  <th>Patient ID</th>
+                  <th>Patient Name</th>
+                  <th>Doctor</th>
+                  <th>Status</th>
                   <th>Actions</th>
                 </tr>
               </thead>
-              <tbody id="doctorsTableBody">
+              <tbody id="appointmentsTableBody">
                 <!-- Dynamic content will be inserted here -->
               </tbody>
             </table>
@@ -430,108 +402,74 @@
       </main>
     </div>
 
-    <!-- Add Doctor Modal -->
-    <div class="modal" id="addDoctorModal">
+    <!-- Add Appointment Modal -->
+    <div class="modal" id="addAppointmentModal">
       <div class="modal-content">
         <div class="modal-header">
-          <h2>Add New Doctor</h2>
+          <h2>Add New Appointment</h2>
           <button class="close-modal">&times;</button>
         </div>
-        <form id="addDoctorForm">
+        <form id="addAppointmentForm">
           <div class="form-group">
-            <label for="doctorName">Full Name</label>
-            <input type="text" id="doctorName" required />
+            <label for="appointmentDateTime">Date and Time</label>
+            <input type="datetime-local" id="appointmentDateTime" required />
           </div>
           <div class="form-group">
-            <label for="department">Department</label>
-            <select id="department" required>
-              <option value="">Select Department</option>
-              <option value="Cardiology">Cardiology</option>
-              <option value="Neurology">Neurology</option>
-              <option value="Orthopedics">Orthopedics</option>
-              <option value="Pediatrics">Pediatrics</option>
-              <option value="Oncology">Oncology</option>
+            <label for="patientSelect">Select Patient</label>
+            <select id="patientSelect" required>
+              <option value="">Select Patient</option>
+              <!-- Will be populated dynamically -->
             </select>
           </div>
           <div class="form-group">
-            <label for="email">Email</label>
-            <input type="email" id="email" required />
+            <label for="doctorSelect">Select Doctor</label>
+            <select id="doctorSelect" required>
+              <option value="">Select Doctor</option>
+              <!-- Will be populated dynamically -->
+            </select>
           </div>
           <div class="form-group">
-            <label for="phone">Phone</label>
-            <input type="tel" id="phone" required />
+            <label for="status">Status</label>
+            <select id="status" required>
+              <option value="pending">Pending</option>
+              <option value="confirmed">Confirmed</option>
+              <option value="completed">Completed</option>
+              <option value="cancelled">Cancelled</option>
+            </select>
           </div>
-          <div class="form-group">
-            <label for="password">Password</label>
-            <input type="password" id="password" required />
-          </div>
-          <div class="form-group">
-            <label for="description">Description</label>
-            <textarea id="description" required rows="4"></textarea>
-          </div>
-          <div class="form-group">
-            <label for="imageUrl">Image URL</label>
-            <input
-              type="url"
-              id="imageUrl"
-              value="https://placehold.co/300x200"
-            />
-          </div>
-          <button type="submit" class="btn-primary">Add Doctor</button>
+          <button type="submit" class="btn-primary">Add Appointment</button>
         </form>
       </div>
     </div>
 
-    <!-- Edit Doctor Modal -->
-    <div class="modal" id="editDoctorModal">
+    <!-- Edit Appointment Modal -->
+    <div class="modal" id="editAppointmentModal">
       <div class="modal-content">
         <div class="modal-header">
-          <h2>Edit Doctor</h2>
+          <h2>Edit Appointment</h2>
           <button class="close-modal">&times;</button>
         </div>
-        <form id="editDoctorForm">
+        <form id="editAppointmentForm">
           <div class="form-group">
-            <label for="editDoctorId">Doctor ID</label>
-            <input type="text" id="editDoctorId" readonly />
+            <label for="editAppointmentId">Appointment ID</label>
+            <input type="text" id="editAppointmentId" readonly />
           </div>
           <div class="form-group">
-            <label for="editDoctorName">Full Name</label>
-            <input type="text" id="editDoctorName" required />
-          </div>
-          <div class="form-group">
-            <label for="editDepartment">Department</label>
-            <select id="editDepartment" required>
-              <option value="">Select Department</option>
-              <option value="Cardiology">Cardiology</option>
-              <option value="Neurology">Neurology</option>
-              <option value="Orthopedics">Orthopedics</option>
-              <option value="Pediatrics">Pediatrics</option>
-              <option value="Oncology">Oncology</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="editEmail">Email</label>
-            <input type="email" id="editEmail" required />
-          </div>
-          <div class="form-group">
-            <label for="editPhone">Phone</label>
-            <input type="tel" id="editPhone" required />
-          </div>
-          <div class="form-group">
-            <label for="editPassword">Password</label>
-            <input type="password" id="editPassword" required />
-          </div>
-          <div class="form-group">
-            <label for="editDescription">Description</label>
-            <textarea id="editDescription" required rows="4"></textarea>
-          </div>
-          <div class="form-group">
-            <label for="editImageUrl">Image URL</label>
+            <label for="editAppointmentDateTime">Date and Time</label>
             <input
-              type="url"
-              id="editImageUrl"
-              value="https://placehold.co/300x200"
+              type="datetime-local"
+              id="editAppointmentDateTime"
+              required
             />
+          </div>
+          <div class="form-group">
+            <label for="editStatus">Status</label>
+            <select id="editStatus" required>
+              <option value="pending">Pending</option>
+              <option value="confirmed">Confirmed</option>
+              <option value="completed">Completed</option>
+              <option value="cancelled">Cancelled</option>
+            </select>
           </div>
           <button type="submit" class="btn-primary">Save Changes</button>
         </form>
@@ -589,84 +527,109 @@
         }
       }
 
-      // Fetch recent doctors
-      async function fetchRecentDoctors() {
+      // Fetch all appointments
+      async function fetchAllAppointments() {
         try {
           const response = await fetch(
-            "http://127.0.0.1:8000/admin/recent-doctors"
+            "http://127.0.0.1:8000/admin/appointments-list"
           );
-          const doctors = await response.json();
+          const appointments = await response.json();
 
-          const tbody = document.getElementById("doctorsTableBody");
+          const tbody = document.getElementById("appointmentsTableBody");
           tbody.innerHTML = ""; // Clear existing rows
 
-          doctors.forEach((doctor) => {
+          appointments.forEach((appointment) => {
             const row = document.createElement("tr");
             row.innerHTML = `
-        <td>${doctor.doctor_id}</td>
-        <td>${doctor.name}</td>
-        <td>${doctor.department}</td>
-        <td>${doctor.email}</td>
-        <td>${doctor.phone}</td>
-        <td>
-          <button class="btn-primary" onclick="editDoctor('${doctor.doctor_id}')">Edit</button>
-          <button class="btn-danger" onclick="removeDoctor('${doctor.doctor_id}')">Remove</button>
-        </td>
-      `;
+              <td>${appointment.appointment_id}</td>
+              <td>${appointment.appointment_time}</td>
+              <td>${appointment.patient_id}</td>
+              <td>${appointment.patient_name}</td>
+              <td>${appointment.doctor_name}</td>
+              <td>${appointment.status}</td>
+              <td>
+                <button class="btn-primary" onclick="editAppointment('${appointment.appointment_id}')">Edit</button>
+              </td>
+            `;
             tbody.appendChild(row);
           });
         } catch (error) {
-          console.error("Error fetching recent doctors:", error);
+          console.error("Error fetching appointments:", error);
         }
       }
 
-      // Edit doctor function
-      async function editDoctor(doctorId) {
+      // Fetch patients for dropdown
+      async function fetchPatients() {
         try {
-          const numericId = doctorId.replace("D", "");
           const response = await fetch(
-            `http://127.0.0.1:8000/admin/doctor/${numericId}`
+            "http://127.0.0.1:8000/admin/patients-list"
           );
-          const doctor = await response.json();
+          const patients = await response.json();
+          const select = document.getElementById("patientSelect");
+          select.innerHTML = '<option value="">Select Patient</option>';
+          patients.forEach((patient) => {
+            select.innerHTML += `<option value="${patient.id}">${patient.name} (${patient.patient_id})</option>`;
+          });
+        } catch (error) {
+          console.error("Error fetching patients:", error);
+        }
+      }
 
-          // Remove "Dr. " prefix if it exists
-          const doctorName = doctor.name.startsWith("Dr. ")
-            ? doctor.name.substring(4)
-            : doctor.name;
+      // Fetch doctors for dropdown
+      async function fetchDoctors() {
+        try {
+          const response = await fetch(
+            "http://127.0.0.1:8000/admin/doctors-list"
+          );
+          const doctors = await response.json();
+          const select = document.getElementById("doctorSelect");
+          select.innerHTML = '<option value="">Select Doctor</option>';
+          doctors.forEach((doctor) => {
+            select.innerHTML += `<option value="${doctor.id}">${doctor.name} (${doctor.department})</option>`;
+          });
+        } catch (error) {
+          console.error("Error fetching doctors:", error);
+        }
+      }
+
+      // Edit appointment function
+      async function editAppointment(appointmentId) {
+        try {
+          const numericId = appointmentId.replace("A", "");
+          const response = await fetch(
+            `http://127.0.0.1:8000/admin/appointment/${numericId}`
+          );
+          const appointment = await response.json();
 
           // Populate edit form
-          document.getElementById("editDoctorId").value = doctor.doctor_id;
-          document.getElementById("editDoctorName").value = doctorName;
-          document.getElementById("editDepartment").value = doctor.department;
-          document.getElementById("editEmail").value = doctor.email;
-          document.getElementById("editPhone").value = doctor.phone;
-          document.getElementById("editDescription").value =
-            doctor.description || "";
-          document.getElementById("editImageUrl").value =
-            doctor.image_url || "https://placehold.co/300x200";
-          document.getElementById("editPassword").value = ""; // Clear password field for security
+          document.getElementById("editAppointmentId").value =
+            appointment.appointment_id;
+          // Convert appointment time to datetime-local format
+          const appointmentDate = new Date(appointment.appointment_time);
+          const formattedDate = appointmentDate.toISOString().slice(0, 16);
+          document.getElementById("editAppointmentDateTime").value =
+            formattedDate;
+          document.getElementById("editStatus").value = appointment.status;
 
           // Show edit modal
-          document.getElementById("editDoctorModal").style.display = "flex";
+          document.getElementById("editAppointmentModal").style.display =
+            "flex";
 
           // Handle form submission
-          const form = document.getElementById("editDoctorForm");
+          const form = document.getElementById("editAppointmentForm");
           form.onsubmit = async (e) => {
             e.preventDefault();
 
             const updatedData = {
-              name: document.getElementById("editDoctorName").value,
-              department: document.getElementById("editDepartment").value,
-              email: document.getElementById("editEmail").value,
-              phone: document.getElementById("editPhone").value,
-              password: document.getElementById("editPassword").value,
-              description: document.getElementById("editDescription").value,
-              image_url: document.getElementById("editImageUrl").value,
+              appointment_time: document
+                .getElementById("editAppointmentDateTime")
+                .value.replace("T", " "),
+              status: document.getElementById("editStatus").value,
             };
 
             try {
               const updateResponse = await fetch(
-                `http://127.0.0.1:8000/admin/doctor/${numericId}`,
+                `http://127.0.0.1:8000/admin/appointment/${numericId}`,
                 {
                   method: "PUT",
                   headers: {
@@ -677,78 +640,53 @@
               );
 
               if (updateResponse.ok) {
-                document.getElementById("editDoctorModal").style.display =
+                document.getElementById("editAppointmentModal").style.display =
                   "none";
-                await fetchRecentDoctors(); // Refresh the list
+                await fetchAllAppointments(); // Refresh the list
                 form.reset();
               } else {
                 const errorData = await updateResponse.json();
                 alert(
-                  `Error updating doctor: ${
+                  `Error updating appointment: ${
                     errorData.detail || "Unknown error"
                   }`
                 );
               }
             } catch (error) {
-              console.error("Error updating doctor:", error);
-              alert("Failed to update doctor. Please try again.");
+              console.error("Error updating appointment:", error);
+              alert("Failed to update appointment. Please try again.");
             }
           };
         } catch (error) {
-          console.error("Error fetching doctor details:", error);
-          alert("Failed to fetch doctor details. Please try again.");
+          console.error("Error fetching appointment details:", error);
+          alert("Failed to fetch appointment details. Please try again.");
         }
       }
 
-      // Remove doctor function
-      async function removeDoctor(doctorId) {
-        if (confirm("Are you sure you want to remove this doctor?")) {
-          try {
-            const numericId = doctorId.replace("D", "");
-            const response = await fetch(
-              `http://127.0.0.1:8000/admin/doctor/${numericId}`,
-              {
-                method: "DELETE",
-                headers: {
-                  "Content-Type": "application/json",
-                },
-              }
-            );
-
-            if (response.ok) {
-              await fetchRecentDoctors(); // Refresh the list
-            } else {
-              const errorData = await response.json();
-              alert(
-                `Error removing doctor: ${errorData.detail || "Unknown error"}`
-              );
-            }
-          } catch (error) {
-            console.error("Error removing doctor:", error);
-            alert("Failed to remove doctor. Please try again.");
-          }
-        }
-      }
-
-      // Add doctor form submission handler
+      // Add appointment form submission handler
       document
-        .getElementById("addDoctorForm")
+        .getElementById("addAppointmentForm")
         .addEventListener("submit", async (e) => {
           e.preventDefault();
 
+          // Format the datetime-local value to match required format
+          const dateTimeInput = document.getElementById(
+            "appointmentDateTime"
+          ).value;
+          const formattedDateTime = dateTimeInput.replace("T", " ");
+
           const formData = {
-            name: document.getElementById("doctorName").value,
-            department: document.getElementById("department").value,
-            email: document.getElementById("email").value,
-            phone: document.getElementById("phone").value,
-            password: document.getElementById("password").value,
-            description: document.getElementById("description").value,
-            image_url: document.getElementById("imageUrl").value,
+            patient_id: parseInt(
+              document.getElementById("patientSelect").value
+            ),
+            doctor_id: parseInt(document.getElementById("doctorSelect").value),
+            appointment_time: formattedDateTime,
+            status: document.getElementById("status").value,
           };
 
           try {
             const response = await fetch(
-              "http://127.0.0.1:8000/doctors/register",
+              "http://127.0.0.1:8000/admin/appointment",
               {
                 method: "POST",
                 headers: {
@@ -759,18 +697,21 @@
             );
 
             if (response.ok) {
-              document.getElementById("addDoctorModal").style.display = "none";
+              document.getElementById("addAppointmentModal").style.display =
+                "none";
               e.target.reset();
-              await fetchRecentDoctors(); // Refresh the list
+              await fetchAllAppointments(); // Refresh the list
             } else {
               const errorData = await response.json();
               alert(
-                `Error adding doctor: ${errorData.detail || "Unknown error"}`
+                `Error adding appointment: ${
+                  errorData.detail || JSON.stringify(errorData)
+                }`
               );
             }
           } catch (error) {
-            console.error("Error adding doctor:", error);
-            alert("Failed to add doctor. Please try again.");
+            console.error("Error adding appointment:", error);
+            alert("Failed to add appointment. Please try again.");
           }
         });
 
@@ -784,16 +725,15 @@
       // Initialize
       document.addEventListener("DOMContentLoaded", () => {
         fetchAdminInfo();
-        fetchRecentDoctors();
+        fetchAllAppointments();
+        fetchPatients();
+        fetchDoctors();
 
-        // Reset form when adding new doctor
+        // Reset form when adding new appointment
         document
-          .getElementById("addDoctorBtn")
+          .getElementById("addAppointmentBtn")
           .addEventListener("click", () => {
-            document.getElementById("addDoctorForm").reset();
-            // Set default image URL
-            document.getElementById("imageUrl").value =
-              "https://placehold.co/300x200";
+            document.getElementById("addAppointmentForm").reset();
           });
       });
     </script>

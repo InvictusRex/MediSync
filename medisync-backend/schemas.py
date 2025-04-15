@@ -167,3 +167,31 @@ class PatientUpdate(BaseModel):
 
     class Config:
         from_attributes = True
+
+class AppointmentCreate(BaseModel):
+    patient_id: int
+    doctor_id: int
+    appointment_time: str  # Keep as string in "YYYY-MM-DD HH:MM" format
+    status: str = "pending"
+
+    class Config:
+        from_attributes = True
+
+class AppointmentUpdate(BaseModel):
+    appointment_time: Optional[str] = None
+    status: Optional[str] = None
+
+    class Config:
+        from_attributes = True
+
+class AdminAppointmentResponse(BaseModel):
+    id: int
+    appointment_id: str
+    appointment_time: str
+    patient_id: str
+    patient_name: str
+    doctor_name: str
+    status: str
+
+    class Config:
+        from_attributes = True
