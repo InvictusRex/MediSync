@@ -141,3 +141,29 @@ class AdminDoctorResponse(BaseModel):
 
     class Config:
         from_attributes = True
+
+# Add this new schema for admin patient management
+class AdminPatientResponse(BaseModel):
+    patient_id: str
+    name: str
+    age: int
+    blood_group: str
+    email: str
+    phone: str
+    medical_history: str
+
+    class Config:
+        from_attributes = True
+
+# Add this for patient updates (similar to DoctorUpdate)
+class PatientUpdate(BaseModel):
+    name: Optional[str] = None
+    phone: Optional[str] = None
+    email: Optional[str] = None
+    age: Optional[int] = None
+    blood_group: Optional[str] = None
+    medical_history: Optional[str] = None
+    password: Optional[str] = None
+
+    class Config:
+        from_attributes = True

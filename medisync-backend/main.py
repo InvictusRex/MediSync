@@ -13,6 +13,7 @@ from crud import patient_dashboard
 from crud import admin_dashboard_header
 from crud import admin_dashboard
 from crud import admin_doctors 
+from crud import admin_patients
 
 app = FastAPI()
 
@@ -247,3 +248,34 @@ def register_doctor(doctor: schemas.DoctorCreate, db: Session = Depends(get_db))
     if doctors.get_doctor_by_phone(db, doctor.phone):
         raise HTTPException(status_code=400, detail="Phone number already registered")
     return doctors.create_doctor(db, doctor)
+
+# Get all patients list
+@app.get("/admin/patients-list")
+def get_all_patients_list_endpoint(db: Session = Depends(get_db)):
+    return admin_patients.get_all_patients_list(db)
+
+# Get specific patient details
+@app.get("/admin/patient/{patient_id}")
+def get_patient_endpoint(patient_id: int, db: Session = Depends(get_db)):
+    patient = admin_patients.get_patient_by_id(db, patient_id)
+    if patient is None:
+        raise HTTPException(status_code=404, detail="Patient not found")
+    return patient
+
+# Update patient details
+@app.put("/admin/patient/{patient_id}", response_model=schemas.PatientResponse)
+def update_patient_endpoint(
+    patient_id: int, patient_data: schemas.PatientCreate, db: Session = Depends(get_db)
+):
+    patient = admin_patients.edit_patient(db, patient_id, patient_data)
+    if patient is None:
+        raise HTTPException(status_code=404, detail="Patient not found")
+    return patient
+
+# Remove patient
+@app.delete("/admin/patient/{patient_id}")
+def remove_patient_endpoint(patient_id: int, db: Session = Depends(get_db)):
+    result = admin_patients.remove_patient(db, patient_id)
+    if "error" in result:
+        raise HTTPException(status_code=404, detail=result["error"])
+    return result
