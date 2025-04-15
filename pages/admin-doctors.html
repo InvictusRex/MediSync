@@ -356,8 +356,8 @@
         </div>
 
         <ul class="nav-menu">
-          <li><a href="#" class="active">Dashboard</a></li>
-          <li><a href="./admin-doctors.html">Doctors</a></li>
+          <li><a href="./admin-dashboard.html">Dashboard</a></li>
+          <li><a href="./admin-doctors.html" class="active">Doctors</a></li>
           <li><a href="#patients">Patients</a></li>
           <li><a href="#appointments">Appointments</a></li>
           <li><a href="../index.html">Logout</a></li>
@@ -366,7 +366,7 @@
 
       <main class="main-content">
         <div class="dashboard-header">
-          <h1 class="dashboard-title">Admin Dashboard</h1>
+          <h1 class="dashboard-title">Doctor Information</h1>
           <button
             class="btn-primary"
             id="addDoctorBtn"
@@ -376,38 +376,9 @@
           </button>
         </div>
 
-        <div class="dashboard-cards">
-          <div class="card">
-            <div class="card-header">
-              <h3 class="card-title">Total Doctors</h3>
-            </div>
-            <div class="card-body">
-              <h2>42</h2>
-            </div>
-          </div>
-
-          <div class="card">
-            <div class="card-header">
-              <h3 class="card-title">Total Patients</h3>
-            </div>
-            <div class="card-body">
-              <h2>156</h2>
-            </div>
-          </div>
-
-          <div class="card">
-            <div class="card-header">
-              <h3 class="card-title">Total Appointments</h3>
-            </div>
-            <div class="card-body">
-              <h2>28</h2>
-            </div>
-          </div>
-        </div>
-
         <div class="card">
           <div class="card-header">
-            <h3 class="card-title">Recent Doctors</h3>
+            <h3 class="card-title">Doctors List</h3>
           </div>
           <div class="table-responsive">
             <table class="data-table">
@@ -589,11 +560,11 @@
         }
       }
 
-      // Fetch recent doctors
-      async function fetchRecentDoctors() {
+      // Fetch all doctors
+      async function fetchAllDoctors() {
         try {
           const response = await fetch(
-            "http://127.0.0.1:8000/admin/recent-doctors"
+            "http://127.0.0.1:8000/admin/doctors-list"
           );
           const doctors = await response.json();
 
@@ -616,7 +587,7 @@
             tbody.appendChild(row);
           });
         } catch (error) {
-          console.error("Error fetching recent doctors:", error);
+          console.error("Error fetching doctors:", error);
         }
       }
 
@@ -679,7 +650,7 @@
               if (updateResponse.ok) {
                 document.getElementById("editDoctorModal").style.display =
                   "none";
-                await fetchRecentDoctors(); // Refresh the list
+                await fetchAllDoctors(); // Refresh the list
                 form.reset();
               } else {
                 const errorData = await updateResponse.json();
@@ -716,7 +687,7 @@
             );
 
             if (response.ok) {
-              await fetchRecentDoctors(); // Refresh the list
+              await fetchAllDoctors(); // Refresh the list
             } else {
               const errorData = await response.json();
               alert(
@@ -761,7 +732,7 @@
             if (response.ok) {
               document.getElementById("addDoctorModal").style.display = "none";
               e.target.reset();
-              await fetchRecentDoctors(); // Refresh the list
+              await fetchAllDoctors(); // Refresh the list
             } else {
               const errorData = await response.json();
               alert(
@@ -784,7 +755,7 @@
       // Initialize
       document.addEventListener("DOMContentLoaded", () => {
         fetchAdminInfo();
-        fetchRecentDoctors();
+        fetchAllDoctors();
 
         // Reset form when adding new doctor
         document

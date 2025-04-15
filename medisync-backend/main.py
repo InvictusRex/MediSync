@@ -12,6 +12,7 @@ from crud import patient_medical_history
 from crud import patient_dashboard
 from crud import admin_dashboard_header
 from crud import admin_dashboard
+from crud import admin_doctors 
 
 app = FastAPI()
 
@@ -211,6 +212,10 @@ def get_admin_dashboard_info(admin_id: int, db: Session = Depends(get_db)):
 def get_recent_doctors_endpoint(db: Session = Depends(get_db)):
     return admin_dashboard.get_recent_doctors(db)
 
+# Get all doctors list
+@app.get("/admin/doctors-list")
+def get_all_doctors_list_endpoint(db: Session = Depends(get_db)):
+    return admin_doctors.get_all_doctors_list(db)
 
 @app.get("/admin/doctor/{doctor_id}")
 def get_doctor_endpoint(doctor_id: int, db: Session = Depends(get_db)):
