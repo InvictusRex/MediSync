@@ -107,13 +107,3 @@ The frontend is built using HTML, CSS, and JavaScript.
 1. Open `index.html` in a browser.
 2. Modify `config.js` to set API endpoints if necessary.
 3. Ensure CORS is enabled for API access.
-
-## 📜 License
-This project is licensed under the **MIT License**.
-
-## 🤝 Contributing
-Pull requests are welcome! If you find any issues, feel free to open an issue or suggest improvements.
-
-## 📞 Contact
-For any queries, contact [InvictusRex](https://github.com/InvictusRex).
-
