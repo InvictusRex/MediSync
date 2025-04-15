@@ -410,118 +410,162 @@
       </main>
     </div>
 
-    <!-- Book Appointment Modal -->
-    <div class="modal" id="bookAppointmentModal">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h2>Book Appointment</h2>
-          <button class="close-modal">&times;</button>
+        <!-- Book Appointment Modal -->
+        <div class="modal" id="bookAppointmentModal">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h2>Book Appointment</h2>
+              <button class="close-modal">&times;</button>
+            </div>
+            <form id="appointmentForm">
+              <div class="form-group">
+                <label for="appointmentDateTime">Date and Time</label>
+                <input type="datetime-local" id="appointmentDateTime" required />
+              </div>
+              <div class="form-group">
+                <label for="doctorSelect">Select Doctor</label>
+                <select id="doctorSelect" required>
+                  <option value="">Select Doctor</option>
+                  <!-- Will be populated dynamically -->
+                </select>
+              </div>
+              <button type="submit" class="btn-primary">Book Appointment</button>
+            </form>
+          </div>
         </div>
-        <form id="appointmentForm">
-          <div class="form-group">
-            <label for="department">Department</label>
-            <select id="department" required>
-              <option value="">Select Department</option>
-              <option value="cardiology">Cardiology</option>
-              <option value="neurology">Neurology</option>
-              <option value="orthopedics">Orthopedics</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="doctor">Doctor</label>
-            <select id="doctor" required>
-              <option value="">Select Doctor</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="appointmentDate">Date</label>
-            <input type="date" id="appointmentDate" required />
-          </div>
-          <div class="form-group">
-            <label for="appointmentTime">Time</label>
-            <select id="appointmentTime" required>
-              <option value="">Select Time</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="reason">Reason for Visit</label>
-            <textarea id="reason" rows="3" required></textarea>
-          </div>
-          <button type="submit" class="btn-primary">Book Appointment</button>
-        </form>
-      </div>
-    </div>
 
-    <script>
-      function toggleTheme() {
-        const body = document.body;
-        if (body.hasAttribute("data-theme")) {
-          body.removeAttribute("data-theme");
-        } else {
-          body.setAttribute("data-theme", "dark");
-        }
-      }
-
-      async function loadMedicalHistoryInfo() {
-    try {
-        const username = localStorage.getItem("username");
-        if (!username) {
-            window.location.href = "../index.html";
-            return;
-        }
-
-        const response = await fetch(`http://localhost:8000/patient/medical-history/${username}`);
-        if (!response.ok) {
-            throw new Error("Failed to fetch medical history info");
-        }
-
-        const data = await response.json();
-
-        // Remove this line as we don't have header anymore
-        // document.querySelector(".header").textContent = data.header;
-
-        // Update sidebar info
-        document.getElementById("userName").textContent = data.name;
-        document.getElementById("patientId").textContent = data.patient_id;
-        document.getElementById("userAvatar").textContent = data.name[0].toUpperCase();
-
-        // Update appointments table
-        const tableBody = document.querySelector(".data-table tbody");
-        tableBody.innerHTML = ''; // Clear existing rows
-
-        data.appointments.forEach(appointment => {
-            const row = document.createElement('tr');
-            row.innerHTML = `
-                <td>${appointment.appointment_id}</td>
-                <td>${appointment.date_time}</td>
-                <td>${appointment.doctor}</td>
-                <td>${appointment.status}</td>
-            `;
-            tableBody.appendChild(row);
-        });
-
-    } catch (error) {
-        console.error("Error loading medical history info:", error);
-        alert("Failed to load medical history information");
-    }
-}
-
-document.addEventListener("DOMContentLoaded", loadMedicalHistoryInfo);
-
-      // Modal functionality
-      document.querySelectorAll("[data-modal]").forEach((button) => {
-        button.addEventListener("click", () => {
-          const modalId = button.getAttribute("data-modal");
-          document.getElementById(modalId).style.display = "flex";
-        });
-      });
-
-      document.querySelectorAll(".close-modal").forEach((button) => {
-        button.addEventListener("click", () => {
-          button.closest(".modal").style.display = "none";
-        });
-      });
-    </script>
+        <script>
+          function toggleTheme() {
+            const body = document.body;
+            if (body.hasAttribute("data-theme")) {
+              body.removeAttribute("data-theme");
+            } else {
+              body.setAttribute("data-theme", "dark");
+            }
+          }
+        
+          async function loadMedicalHistoryInfo() {
+            try {
+              const username = localStorage.getItem("username");
+              if (!username) {
+                window.location.href = "../index.html";
+                return;
+              }
+        
+              const response = await fetch(`http://localhost:8000/patient/medical-history/${username}`);
+              if (!response.ok) {
+                throw new Error("Failed to fetch medical history info");
+              }
+        
+              const data = await response.json();
+        
+              // Update sidebar info
+              document.getElementById("userName").textContent = data.name;
+              document.getElementById("patientId").textContent = data.patient_id;
+              document.getElementById("userAvatar").textContent = data.name[0].toUpperCase();
+        
+              // Update appointments table
+              const tableBody = document.querySelector(".data-table tbody");
+              tableBody.innerHTML = ''; // Clear existing rows
+        
+              data.appointments.forEach(appointment => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                  <td>${appointment.appointment_id}</td>
+                  <td>${appointment.date_time}</td>
+                  <td>${appointment.doctor}</td>
+                  <td>${appointment.status}</td>
+                `;
+                tableBody.appendChild(row);
+              });
+        
+            } catch (error) {
+              console.error("Error loading medical history info:", error);
+              alert("Failed to load medical history information");
+            }
+          }
+        
+          // Fetch doctors for dropdown
+          async function fetchDoctors() {
+            try {
+              const response = await fetch("http://127.0.0.1:8000/admin/doctors-list");
+              const doctors = await response.json();
+              const select = document.getElementById("doctorSelect");
+              select.innerHTML = '<option value="">Select Doctor</option>';
+              doctors.forEach((doctor) => {
+                select.innerHTML += `<option value="${doctor.id}">${doctor.name} (${doctor.department})</option>`;
+              });
+            } catch (error) {
+              console.error("Error fetching doctors:", error);
+            }
+          }
+        
+          document.addEventListener("DOMContentLoaded", loadMedicalHistoryInfo);
+        
+          // Modal functionality
+          document.querySelectorAll("[data-modal]").forEach((button) => {
+            button.addEventListener("click", () => {
+              const modalId = button.getAttribute("data-modal");
+              document.getElementById(modalId).style.display = "flex";
+            });
+          });
+        
+          document.querySelectorAll(".close-modal").forEach((button) => {
+            button.addEventListener("click", () => {
+              button.closest(".modal").style.display = "none";
+            });
+          });
+        
+          // Close modal when clicking outside
+          window.addEventListener("click", (event) => {
+            if (event.target.classList.contains("modal")) {
+              event.target.style.display = "none";
+            }
+          });
+        
+          // Add appointment form submission handler
+          document.getElementById("appointmentForm").addEventListener("submit", async (e) => {
+            e.preventDefault();
+        
+            const dateTimeInput = document.getElementById("appointmentDateTime").value;
+            const formattedDateTime = dateTimeInput.replace("T", " ") + ":00";
+        
+            const formData = {
+              patient_id: parseInt(localStorage.getItem("user_id")),
+              doctor_id: parseInt(document.getElementById("doctorSelect").value),
+              appointment_time: formattedDateTime,
+              status: "pending" // Hardcoded to pending for patients
+            };
+        
+            try {
+              const response = await fetch("http://127.0.0.1:8000/admin/appointment", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify(formData),
+              });
+        
+              if (response.ok) {
+                document.getElementById("bookAppointmentModal").style.display = "none";
+                e.target.reset();
+                await loadMedicalHistoryInfo(); // Changed from loadDashboardInfo to loadMedicalHistoryInfo
+                alert("Appointment booked successfully!");
+              } else {
+                const errorData = await response.json();
+                alert(`Error booking appointment: ${errorData.detail || "Unknown error"}`);
+              }
+            } catch (error) {
+              console.error("Error booking appointment:", error);
+              alert("Failed to book appointment. Please try again.");
+            }
+          });
+        
+          // Initialize doctors dropdown when opening modal
+          document.querySelector('[data-modal="bookAppointmentModal"]').addEventListener("click", () => {
+            fetchDoctors();
+          });
+        </script>
   </body>
 </html>
  
