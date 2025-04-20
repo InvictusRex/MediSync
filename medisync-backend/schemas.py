@@ -227,3 +227,9 @@ class DoctorProfileResponse(BaseModel):
 
     class Config:
         from_attributes = True
+
+class DoctorAllAppointmentsResponse(BaseModel):
+    appointments: List[dict]
+
+    class Config:
+        from_attributes = True

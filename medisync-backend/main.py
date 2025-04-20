@@ -20,6 +20,7 @@ from schemas import AdminAppointmentResponse, AppointmentCreate, AppointmentUpda
 from crud import doctor_dashboard_header
 from crud import doctor_dashboard
 from crud import doctor_profiles
+from crud import doctor_appointments
 
 app = FastAPI()
 
@@ -369,3 +370,12 @@ def get_doctor_profile(username: str, db: Session = Depends(get_db)):
     if not doctor:
         raise HTTPException(status_code=404, detail="Doctor not found")
     return doctor_profiles.format_profile_response(doctor)
+
+@app.get("/doctor/all-appointments/{username}")
+def get_all_doctor_appointments(username: str, db: Session = Depends(get_db)):
+    doctor = doctor_appointments.get_doctor_by_name(db, username)
+    if not doctor:
+        raise HTTPException(status_code=404, detail="Doctor not found")
+    
+    appointments = doctor_appointments.get_all_doctor_appointments(db, doctor.id)
+    return doctor_appointments.format_appointments_response(appointments)
