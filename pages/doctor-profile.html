@@ -264,9 +264,12 @@
         <div class="sidebar-header"></div>
 
         <div class="user-info">
-          <div class="user-avatar">I</div>
-          <h3>InvictusRex</h3>
-          <p>Doctor ID: P12345</p>
+          <div class="user-avatar" id="userAvatar">
+            <!-- Will be filled by JS -->
+          </div>
+          <h3 id="userName">Loading...</h3>
+          <p id="doctorId">Loading...</p>
+          <p id="department">Loading...</p>
         </div>
 
         <ul class="nav-menu">
@@ -289,27 +292,23 @@
             <div class="profile-info">
               <div class="info-item">
                 <div class="info-label">Doctor ID</div>
-                <div class="info-value">P12345</div>
+                <div class="info-value" id="profileDoctorId">Loading...</div>
               </div>
               <div class="info-item">
                 <div class="info-label">Full Name</div>
-                <div class="info-value">InvictusRex</div>
+                <div class="info-value" id="profileName">Loading...</div>
               </div>
               <div class="info-item">
-                <div class="info-label">Age</div>
-                <div class="info-value">28</div>
-              </div>
-              <div class="info-item">
-                <div class="info-label">Blood Group</div>
-                <div class="info-value">O+</div>
+                <div class="info-label">Department</div>
+                <div class="info-value" id="profileDepartment">Loading...</div>
               </div>
               <div class="info-item">
                 <div class="info-label">Phone Number</div>
-                <div class="info-value">+1 (555) 123-4567</div>
+                <div class="info-value" id="profilePhone">Loading...</div>
               </div>
               <div class="info-item">
                 <div class="info-label">Email</div>
-                <div class="info-value">invictus@example.com</div>
+                <div class="info-value" id="profileEmail">Loading...</div>
               </div>
             </div>
           </div>
@@ -317,13 +316,7 @@
           <div class="profile-section">
             <h3>Doctor Description</h3>
             <div class="description">
-              <p>
-                Patient has a history of mild hypertension, controlled with
-                medication. No known allergies. Regular physical activity and
-                maintains a healthy diet. Last general checkup was performed on
-                March 20, 2025, with all vital signs within normal ranges.
-                Scheduled for annual follow-up in March 2026.
-              </p>
+              <p id="profileDescription">Loading...</p>
             </div>
           </div>
         </div>
@@ -331,14 +324,93 @@
     </div>
 
     <script>
+      // Function to load dashboard header info (reusing existing endpoint)
+      async function loadDashboardInfo() {
+        try {
+          const username = localStorage.getItem("username");
+          if (!username) {
+            window.location.href = "../index.html";
+            return;
+          }
+
+          const response = await fetch(
+            `http://localhost:8000/doctor/dashboard-info/${username}`
+          );
+          if (!response.ok) {
+            throw new Error("Failed to fetch dashboard info");
+          }
+
+          const data = await response.json();
+
+          // Update user info in sidebar
+          document.getElementById("userName").textContent = data.name;
+          document.getElementById("doctorId").textContent = data.doctor_id;
+          document.getElementById("department").textContent = data.department;
+          document.getElementById("userAvatar").textContent =
+            data.name[0].toUpperCase();
+        } catch (error) {
+          console.error("Error loading dashboard info:", error);
+          alert("Failed to load dashboard information");
+        }
+      }
+
+      // Function to load profile information
+      async function loadProfileInfo() {
+        try {
+          const username = localStorage.getItem("username");
+          if (!username) {
+            window.location.href = "../index.html";
+            return;
+          }
+
+          const response = await fetch(
+            `http://localhost:8000/doctor/profile/${username}`
+          );
+          if (!response.ok) {
+            throw new Error("Failed to fetch profile info");
+          }
+
+          const data = await response.json();
+          const info = data.doctor_info;
+
+          // Update profile information
+          document.getElementById("profileDoctorId").textContent = info.ID;
+          document.getElementById("profileName").textContent = info.Name;
+          document.getElementById("profileDepartment").textContent =
+            info.Department;
+          document.getElementById("profilePhone").textContent = info.Phone;
+          document.getElementById("profileEmail").textContent = info.Email;
+          document.getElementById("profileDescription").textContent =
+            info.Description;
+        } catch (error) {
+          console.error("Error loading profile info:", error);
+          alert("Failed to load profile information");
+        }
+      }
+
+      // Function to toggle theme (if not already defined)
       function toggleTheme() {
         const body = document.body;
         if (body.hasAttribute("data-theme")) {
           body.removeAttribute("data-theme");
+          localStorage.setItem("theme", "light");
         } else {
           body.setAttribute("data-theme", "dark");
+          localStorage.setItem("theme", "dark");
         }
       }
+
+      // Initialize on page load
+      document.addEventListener("DOMContentLoaded", () => {
+        // Set theme from localStorage
+        const theme = localStorage.getItem("theme");
+        if (theme === "dark") {
+          document.body.setAttribute("data-theme", "dark");
+        }
+
+        loadDashboardInfo();
+        loadProfileInfo();
+      });
     </script>
   </body>
 </html>

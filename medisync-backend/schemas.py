@@ -220,3 +220,10 @@ class DoctorDashboardResponse(BaseModel):
 
     class Config:
         from_attributes = True
+
+class DoctorProfileResponse(BaseModel):
+    header: str
+    doctor_info: dict
+
+    class Config:
+        from_attributes = True
