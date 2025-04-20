@@ -17,6 +17,8 @@ from crud import admin_doctors
 from crud import admin_patients
 from crud import admin_appointments
 from schemas import AdminAppointmentResponse, AppointmentCreate, AppointmentUpdate
+from crud import doctor_dashboard_header
+from crud import doctor_dashboard
 
 app = FastAPI()
 
@@ -320,3 +322,42 @@ def remove_appointment_endpoint(appointment_id: int, db: Session = Depends(get_d
 @app.get("/admin/available-doctors/{appointment_time}")
 def get_available_doctors_endpoint(appointment_time: datetime, db: Session = Depends(get_db)):
     return admin_appointments.get_available_doctors(db, appointment_time)
+
+# Add this with your other endpoints
+@app.get("/doctor/dashboard-info/{username}", response_model=schemas.DoctorHeaderResponse)
+def get_doctor_dashboard_info(username: str, db: Session = Depends(get_db)):
+    doctor = doctor_dashboard_header.get_doctor_dashboard_info(db, username)
+    if not doctor:
+        raise HTTPException(status_code=404, detail="Doctor not found")
+    return doctor
+
+@app.get("/doctor/appointments/{username}", response_model=schemas.DoctorDashboardResponse)
+def get_doctor_appointments(username: str, db: Session = Depends(get_db)):
+    doctor = doctor_dashboard.get_doctor_by_name(db, username)
+    if not doctor:
+        raise HTTPException(status_code=404, detail="Doctor not found")
+    
+    appointments = doctor_dashboard.get_doctor_appointments(db, doctor.id)
+    return doctor_dashboard.format_dashboard_response(appointments)
+
+@app.put("/doctor/appointment/{appointment_id}")
+def update_doctor_appointment(
+    appointment_id: int, 
+    update_data: schemas.AppointmentUpdate, 
+    db: Session = Depends(get_db)
+):
+    try:
+        # Convert string datetime to Python datetime if provided
+        new_datetime = datetime.strptime(update_data.appointment_time, "%Y-%m-%d %H:%M:%S") if update_data.appointment_time else None
+        
+        result = doctor_dashboard.update_appointment(
+            db, 
+            appointment_id, 
+            new_datetime=new_datetime,
+            new_status=update_data.status
+        )
+        if not result:
+            raise HTTPException(status_code=404, detail="Appointment not found")
+        return {"status": "success", "message": "Appointment updated successfully"}
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))

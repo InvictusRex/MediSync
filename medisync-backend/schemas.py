@@ -195,3 +195,28 @@ class AdminAppointmentResponse(BaseModel):
 
     class Config:
         from_attributes = True
+
+# Add this with your other schemas
+class DoctorHeaderResponse(BaseModel):
+    name: str
+    doctor_id: str
+    department: str
+
+    class Config:
+        from_attributes = True
+
+class DoctorDashboardAppointment(BaseModel):
+    appointment_id: str
+    date_time: str
+    patient_id: str
+    patient_name: str
+    status: str
+
+    class Config:
+        from_attributes = True
+
+class DoctorDashboardResponse(BaseModel):
+    appointments: List[DoctorDashboardAppointment]
+
+    class Config:
+        from_attributes = True

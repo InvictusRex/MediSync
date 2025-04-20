@@ -305,6 +305,62 @@
           width: 100%;
         }
       }
+
+      .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+    }
+
+    .modal-content {
+        background: var(--bg-secondary);
+        border-radius: 12px;
+        padding: 2rem;
+        width: 90%;
+        max-width: 500px;
+    }
+
+    .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+    }
+
+    .close-modal {
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        color: var(--text-primary);
+        cursor: pointer;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        color: var(--text-secondary);
+    }
+
+    .form-group input,
+    .form-group select {
+        width: 100%;
+        padding: 0.75rem;
+        border-radius: 6px;
+        border: 1px solid var(--border-color);
+        background: var(--bg-primary);
+        color: var(--text-primary);
+    }
     </style>
   </head>
   <body>
@@ -342,9 +398,12 @@
         <div class="sidebar-header"></div>
 
         <div class="user-info">
-          <div class="user-avatar">I</div>
-          <h3>InvictusRex</h3>
-          <p>Doctor</p>
+          <div class="user-avatar" id="userAvatar">
+            <!-- Will be filled by JS -->
+          </div>
+          <h3 id="userName">Loading...</h3>
+          <p id="doctorId">Loading...</p>
+          <p id="department">Loading...</p>
         </div>
 
         <ul class="nav-menu">
@@ -398,14 +457,16 @@
             <table class="data-table">
               <thead>
                 <tr>
+                  <th>Appointment ID</th>
+                  <th>Date / Time</th>
+                  <th>Patient ID</th>
                   <th>Patient Name</th>
-                  <th>Time</th>
                   <th>Status</th>
                   <th>Actions</th>
                 </tr>
               </thead>
-              <tbody id="appointments-table-body">
-                <!-- Data will be inserted here dynamically -->
+              <tbody id="appointmentsTableBody">
+                <!-- Dynamic content will be inserted here -->
               </tbody>
             </table>
           </div>
@@ -438,55 +499,191 @@
       </div>
     </div>
 
+    <div class="modal" id="updateAppointmentModal">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h2>Update Appointment</h2>
+              <button class="close-modal">&times;</button>
+          </div>
+          <form id="updateAppointmentForm">
+              <input type="hidden" id="updateAppointmentId">
+              <div class="form-group">
+                  <label for="updateDateTime">Date and Time</label>
+                  <input type="datetime-local" id="updateDateTime" required>
+              </div>
+              <div class="form-group">
+                  <label for="updateStatus">Status</label>
+                  <select id="updateStatus" required>
+                      <option value="pending">Pending</option>
+                      <option value="confirmed">Confirmed</option>
+                      <option value="completed">Completed</option>
+                      <option value="cancelled">Cancelled</option>
+                  </select>
+              </div>
+              <button type="submit" class="btn-primary">Update Appointment</button>
+          </form>
+      </div>
+  </div>
+
     <script>
+      // Function to load dashboard header info
+      async function loadDashboardInfo() {
+          try {
+              const username = localStorage.getItem("username");
+              if (!username) {
+                  window.location.href = "../index.html";
+                  return;
+              }
+  
+              const response = await fetch(
+                  `http://localhost:8000/doctor/dashboard-info/${username}`
+              );
+              if (!response.ok) {
+                  throw new Error("Failed to fetch dashboard info");
+              }
+  
+              const data = await response.json();
+  
+              // Update user info
+              document.getElementById("userName").textContent = data.name;
+              document.getElementById("doctorId").textContent = data.doctor_id;
+              document.getElementById("department").textContent = data.department;
+              document.getElementById("userAvatar").textContent = data.name[0].toUpperCase();
+          } catch (error) {
+              console.error("Error loading dashboard info:", error);
+              alert("Failed to load dashboard information");
+          }
+      }
+  
+      // Call the function when page loads
+      document.addEventListener("DOMContentLoaded", loadDashboardInfo);
+  
+      // Your existing theme toggle function
       function toggleTheme() {
-        const body = document.body;
-        if (body.hasAttribute("data-theme")) {
-          body.removeAttribute("data-theme");
-        } else {
-          body.setAttribute("data-theme", "dark");
+          const body = document.body;
+          if (body.hasAttribute("data-theme")) {
+              body.removeAttribute("data-theme");
+          } else {
+              body.setAttribute("data-theme", "dark");
+          }
+      }
+
+      async function loadAppointments() {
+        try {
+            const username = localStorage.getItem("username");
+            if (!username) {
+                window.location.href = "../index.html";
+                return;
+            }
+
+            const response = await fetch(
+                `http://localhost:8000/doctor/appointments/${username}`
+            );
+            if (!response.ok) {
+                throw new Error("Failed to fetch appointments");
+            }
+
+            const data = await response.json();
+            const tableBody = document.getElementById("appointmentsTableBody");
+            tableBody.innerHTML = ""; // Clear existing contents
+
+            if (data.appointments && data.appointments.length > 0) {
+                data.appointments.forEach(appointment => {
+                    const row = document.createElement("tr");
+                    row.innerHTML = `
+                        <td>${appointment.appointment_id}</td>
+                        <td>${appointment.date_time}</td>
+                        <td>${appointment.patient_id}</td>
+                        <td>${appointment.patient_name}</td>
+                        <td><span class="status-badge status-${appointment.status.toLowerCase()}">${appointment.status}</span></td>
+                        <td>
+                            <button class="btn-secondary" onclick="openUpdateModal('${appointment.appointment_id}', '${appointment.date_time}')">Update</button>
+                        </td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+            } else {
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="6" style="text-align: center;">No pending appointments found</td>
+                    </tr>
+                `;
+            }
+        } catch (error) {
+            console.error("Error loading appointments:", error);
+            alert("Failed to load appointments");
         }
-      }
+    }
 
-      // Fetch appointments data and update the table
-      async function fetchAppointments() {
-        const res = await fetch("http://localhost:8000/appointments");
-        const appointments = await res.json();
-        const tableBody = document.getElementById("appointments-table-body");
+    // Function to open update modal
+    function openUpdateModal(appointmentId, dateTime) {
+        document.getElementById('updateAppointmentId').value = appointmentId;
+        
+        // Convert the datetime string to the format required by datetime-local input
+        const formattedDateTime = dateTime.slice(0, 16); // Remove seconds
+        document.getElementById('updateDateTime').value = formattedDateTime;
+        
+        document.getElementById('updateStatus').value = 'pending';
+        document.getElementById('updateAppointmentModal').style.display = 'flex';
+    }
 
-        tableBody.innerHTML = "";
-        appointments.forEach((appointment) => {
-          const row = document.createElement("tr");
-          row.innerHTML = `
-            <td>${appointment.patient_name}</td>
-            <td>${appointment.time}</td>
-            <td><span class="status-badge status-pending">${appointment.status}</span></td>
-            <td>
-              <button class="btn-primary" data-modal="viewPatientModal" data-patient-name="${appointment.patient_name}">View</button>
-              <button class="btn-secondary">Update</button>
-            </td>
-          `;
-          tableBody.appendChild(row);
-        });
-      }
+    // Function to close modal
+    function closeModal() {
+        document.getElementById('updateAppointmentModal').style.display = 'none';
+    }
 
-      document.addEventListener("DOMContentLoaded", fetchAppointments);
+    // Add event listener for update form submission
+    document.getElementById('updateAppointmentForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const appointmentId = document.getElementById('updateAppointmentId').value.replace('A', '');
+        const dateTime = document.getElementById('updateDateTime').value + ':00'; // Add seconds
+        const status = document.getElementById('updateStatus').value;
 
-      // Modal functionality
-      document.querySelectorAll("[data-modal]").forEach((button) => {
-        button.addEventListener("click", (event) => {
-          const modalId = button.getAttribute("data-modal");
-          const patientName = button.getAttribute("data-patient-name");
-          document.getElementById("patient-name").innerText = patientName;
-          document.getElementById(modalId).style.display = "flex";
-        });
-      });
+        try {
+            const response = await fetch(`http://localhost:8000/doctor/appointment/${appointmentId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    appointment_time: dateTime,
+                    status: status
+                })
+            });
 
-      document.querySelectorAll(".close-modal").forEach((button) => {
-        button.addEventListener("click", () => {
-          button.closest(".modal").style.display = "none";
-        });
-      });
+            if (!response.ok) {
+                throw new Error('Failed to update appointment');
+            }
+
+            closeModal();
+            loadAppointments(); // Reload the appointments table
+            alert('Appointment updated successfully');
+        } catch (error) {
+            console.error('Error updating appointment:', error);
+            alert('Failed to update appointment');
+        }
+    });
+
+    // Close modal when clicking the close button
+    document.querySelectorAll('.close-modal').forEach(button => {
+        button.addEventListener('click', closeModal);
+    });
+
+    // Close modal when clicking outside
+    window.addEventListener('click', (event) => {
+        const modal = document.getElementById('updateAppointmentModal');
+        if (event.target === modal) {
+            closeModal();
+        }
+    });
+
+    // Add loadAppointments to the DOMContentLoaded event listener
+    document.addEventListener("DOMContentLoaded", () => {
+        loadDashboardInfo(); // Your existing function
+        loadAppointments(); // New function
+    });
+  </script>
     </script>
   </body>
 </html>
