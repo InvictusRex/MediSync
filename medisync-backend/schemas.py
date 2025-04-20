@@ -233,3 +233,5 @@ class DoctorAllAppointmentsResponse(BaseModel):
 
     class Config:
         from_attributes = True
+
+# End of backend implementations for MediSync HMS
