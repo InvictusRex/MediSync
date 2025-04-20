@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>MediSync - Doctor Profile</title>
+    <title>Doctor Patients - MediSync HMS</title>
     <style>
       :root {
         --bg-primary: #0a0a0a;
@@ -26,7 +26,6 @@
         --border-color: #e5e7eb;
         --shadow-color: rgba(0, 0, 0, 0.1);
       }
-
       * {
         margin: 0;
         padding: 0;
@@ -149,69 +148,159 @@
         color: var(--text-primary);
       }
 
-      .profile-card {
+      .dashboard-cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+      }
+
+      .card {
         background: var(--bg-secondary);
         border-radius: 12px;
-        padding: 2rem;
-        margin-bottom: 2rem;
         border: 1px solid var(--border-color);
+        overflow: hidden;
+        transition: transform 0.2s, box-shadow 0.2s;
       }
 
-      .profile-section {
-        margin-bottom: 1.5rem;
-      }
-
-      .profile-section h3 {
-        color: var(--text-primary);
-        margin-bottom: 1rem;
-        border-bottom: 1px solid var(--border-color);
-        padding-bottom: 0.5rem;
-      }
-      .profile-card:hover {
+      .card:hover {
         transform: translateY(-2px);
         box-shadow: 0 1px 10px var(--text-primary);
       }
-      .profile-info {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 1.5rem;
+
+      .card-header {
+        padding: 1rem;
+        border-bottom: 1px solid var(--border-color);
       }
 
-      .info-item {
+      .card-title {
+        color: var(--text-primary);
+        font-size: 1.2rem;
+      }
+
+      .card-body {
+        padding: 1.5rem;
+        text-align: center;
+      }
+
+      .card-body h2 {
+        font-size: 2.5rem;
+        color: var(--text-primary);
+      }
+
+      .table-responsive {
+        overflow-x: auto;
+      }
+
+      .data-table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      .data-table th,
+      .data-table td {
+        padding: 1rem;
+        text-align: left;
+        border-bottom: 1px solid var(--border-color);
+      }
+
+      .data-table th {
+        color: var(--text-secondary);
+        font-weight: 600;
+      }
+
+      .status-badge {
+        padding: 0.3rem 0.8rem;
+        border-radius: 20px;
+        font-size: 0.9rem;
+      }
+
+      .status-active {
+        background-color: var(--success-color);
+        color: white;
+      }
+
+      .btn-primary,
+      .btn-secondary,
+      .btn-danger {
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        border: none;
+        font-weight: 600;
+        cursor: pointer;
+        transition: transform 0.2s, box-shadow 0.2s;
+        margin-right: 0.5rem;
+      }
+
+      .btn-primary {
+        background: var(--primary-color);
+        color: white;
+      }
+
+      .btn-secondary {
+        background: var(--bg-primary);
+        color: var(--text-primary);
+        border: 1px solid var(--border-color);
+      }
+
+      .btn-danger {
+        background: var(--danger-color);
+        color: white;
+      }
+
+      .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        align-items: center;
+        justify-content: center;
+      }
+
+      .modal-content {
+        background: var(--bg-secondary);
+        border-radius: 12px;
+        padding: 2rem;
+        width: 90%;
+        max-width: 500px;
+      }
+
+      .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+      }
+
+      .close-modal {
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        color: var(--text-primary);
+        cursor: pointer;
+      }
+
+      .form-group {
         margin-bottom: 1rem;
       }
 
-      .info-label {
+      .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
         color: var(--text-secondary);
-        font-size: 0.9rem;
-        margin-bottom: 0.25rem;
       }
 
-      .info-value {
-        color: var(--text-primary);
-        font-size: 1.1rem;
-        font-weight: 500;
-      }
-
-      .description {
-        background: var(--bg-primary);
-        padding: 1.5rem;
-        border-radius: 8px;
-        margin-top: 1rem;
-      }
-
-      .edit-btn {
-        background: var(--primary-color);
-        color: white;
-        border: none;
-        padding: 0.5rem 1rem;
+      .form-group input,
+      .form-group select {
+        width: 100%;
+        padding: 0.75rem;
         border-radius: 6px;
-        cursor: pointer;
-        transition: transform 0.2s;
-      }
-
-      .edit-btn:hover {
-        transform: translateY(-2px);
+        border: 1px solid var(--border-color);
+        background: var(--bg-primary);
+        color: var(--text-primary);
       }
 
       @media (max-width: 768px) {
@@ -222,10 +311,27 @@
         .sidebar {
           width: 100%;
         }
+      }
 
-        .profile-info {
-          grid-template-columns: 1fr;
-        }
+      .status-badge {
+        padding: 0.3rem 0.8rem;
+        border-radius: 20px;
+        font-size: 0.9rem;
+      }
+
+      .status-pending {
+        background-color: var(--warning-color);
+        color: var(--bg-primary);
+      }
+
+      .status-completed {
+        background-color: var(--success-color);
+        color: var(--bg-primary);
+      }
+
+      .status-cancelled {
+        background-color: var(--danger-color);
+        color: white;
       }
     </style>
   </head>
@@ -261,8 +367,6 @@
 
     <div class="dashboard-container">
       <aside class="sidebar">
-        <div class="sidebar-header"></div>
-
         <div class="user-info">
           <div class="user-avatar" id="userAvatar">
             <!-- Will be filled by JS -->
@@ -274,50 +378,38 @@
 
         <ul class="nav-menu">
           <li><a href="doctor-dashboard.html">Dashboard</a></li>
-          <li><a href="#" class="active">Profile</a></li>
+          <li><a href="doctor-profile.html">Profile</a></li>
           <li><a href="doctor-appointments.html">My Appointments</a></li>
-          <li><a href="#patients">My Patients</a></li>
+          <li><a href="#" class="active">My Patients</a></li>
           <li><a href="../index.html">Logout</a></li>
         </ul>
       </aside>
 
       <main class="main-content">
         <div class="dashboard-header">
-          <h1 class="dashboard-title">Doctor Profile</h1>
+          <h1 class="dashboard-title">My Patients</h1>
         </div>
 
-        <div class="profile-card">
-          <div class="profile-section">
-            <h3>Personal Information</h3>
-            <div class="profile-info">
-              <div class="info-item">
-                <div class="info-label">Doctor ID</div>
-                <div class="info-value" id="profileDoctorId">Loading...</div>
-              </div>
-              <div class="info-item">
-                <div class="info-label">Full Name</div>
-                <div class="info-value" id="profileName">Loading...</div>
-              </div>
-              <div class="info-item">
-                <div class="info-label">Department</div>
-                <div class="info-value" id="profileDepartment">Loading...</div>
-              </div>
-              <div class="info-item">
-                <div class="info-label">Phone Number</div>
-                <div class="info-value" id="profilePhone">Loading...</div>
-              </div>
-              <div class="info-item">
-                <div class="info-label">Email</div>
-                <div class="info-value" id="profileEmail">Loading...</div>
-              </div>
-            </div>
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Patient List</h3>
           </div>
-
-          <div class="profile-section">
-            <h3>Doctor Description</h3>
-            <div class="description">
-              <p id="profileDescription">Loading...</p>
-            </div>
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Patient ID</th>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>Phone</th>
+                  <th>Last Visit</th>
+                  <th>Total Visits</th>
+                </tr>
+              </thead>
+              <tbody id="patientsTableBody">
+                <!-- Dynamic content will be inserted here -->
+              </tbody>
+            </table>
           </div>
         </div>
       </main>
@@ -354,8 +446,8 @@
         }
       }
 
-      // Function to load profile information
-      async function loadProfileInfo() {
+      // Function to fetch and display all patients
+      async function loadPatients() {
         try {
           const username = localStorage.getItem("username");
           if (!username) {
@@ -364,31 +456,43 @@
           }
 
           const response = await fetch(
-            `http://localhost:8000/doctor/profile/${username}`
+            `http://localhost:8000/doctor/patients/${username}`
           );
           if (!response.ok) {
-            throw new Error("Failed to fetch profile info");
+            throw new Error("Failed to fetch patients");
           }
 
           const data = await response.json();
-          const info = data.doctor_info;
+          const tableBody = document.getElementById("patientsTableBody");
+          tableBody.innerHTML = ""; // Clear existing contents
 
-          // Update profile information
-          document.getElementById("profileDoctorId").textContent = info.ID;
-          document.getElementById("profileName").textContent = info.Name;
-          document.getElementById("profileDepartment").textContent =
-            info.Department;
-          document.getElementById("profilePhone").textContent = info.Phone;
-          document.getElementById("profileEmail").textContent = info.Email;
-          document.getElementById("profileDescription").textContent =
-            info.Description;
+          if (data.patients && data.patients.length > 0) {
+            data.patients.forEach((patient) => {
+              const row = document.createElement("tr");
+              row.innerHTML = `
+                <td>${patient.patient_id}</td>
+                <td>${patient.name}</td>
+                <td>${patient.email}</td>
+                <td>${patient.phone}</td>
+                <td>${patient.last_visit}</td>
+                <td>${patient.total_visits}</td>
+              `;
+              tableBody.appendChild(row);
+            });
+          } else {
+            tableBody.innerHTML = `
+              <tr>
+                <td colspan="6" style="text-align: center;">No patients found</td>
+              </tr>
+            `;
+          }
         } catch (error) {
-          console.error("Error loading profile info:", error);
-          alert("Failed to load profile information");
+          console.error("Error loading patients:", error);
+          alert("Failed to load patients");
         }
       }
 
-      // Function to toggle theme (if not already defined)
+      // Function to toggle theme
       function toggleTheme() {
         const body = document.body;
         if (body.hasAttribute("data-theme")) {
@@ -402,14 +506,12 @@
 
       // Initialize on page load
       document.addEventListener("DOMContentLoaded", () => {
-        // Set theme from localStorage
-        const theme = localStorage.getItem("theme");
-        if (theme === "dark") {
-          document.body.setAttribute("data-theme", "dark");
-        }
+        // Always set dark mode by default
+        document.body.removeAttribute("data-theme");
+        localStorage.setItem("theme", "light");
 
         loadDashboardInfo();
-        loadProfileInfo();
+        loadPatients();
       });
     </script>
   </body>
