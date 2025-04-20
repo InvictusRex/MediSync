@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Doctor Appointments - MediSync HMS</title>
+    <title>Doctor Patients - MediSync HMS</title>
     <style>
       :root {
         --bg-primary: #0a0a0a;
@@ -26,7 +26,6 @@
         --border-color: #e5e7eb;
         --shadow-color: rgba(0, 0, 0, 0.1);
       }
-
       * {
         margin: 0;
         padding: 0;
@@ -380,33 +379,34 @@
         <ul class="nav-menu">
           <li><a href="doctor-dashboard.html">Dashboard</a></li>
           <li><a href="doctor-profile.html">Profile</a></li>
-          <li><a href="#" class="active">My Appointments</a></li>
-          <li><a href="doctor-patients.html">My Patients</a></li>
+          <li><a href="doctor-appointments.html">My Appointments</a></li>
+          <li><a href="#" class="active">My Patients</a></li>
           <li><a href="../index.html">Logout</a></li>
         </ul>
       </aside>
 
       <main class="main-content">
         <div class="dashboard-header">
-          <h1 class="dashboard-title">All Appointments</h1>
+          <h1 class="dashboard-title">My Patients</h1>
         </div>
 
         <div class="card">
           <div class="card-header">
-            <h3 class="card-title">Appointment List</h3>
+            <h3 class="card-title">Patient List</h3>
           </div>
           <div class="table-responsive">
             <table class="data-table">
               <thead>
                 <tr>
-                  <th>Appointment ID</th>
-                  <th>Date / Time</th>
                   <th>Patient ID</th>
-                  <th>Patient Name</th>
-                  <th>Status</th>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>Phone</th>
+                  <th>Last Visit</th>
+                  <th>Total Visits</th>
                 </tr>
               </thead>
-              <tbody id="appointmentsTableBody">
+              <tbody id="patientsTableBody">
                 <!-- Dynamic content will be inserted here -->
               </tbody>
             </table>
@@ -446,8 +446,8 @@
         }
       }
 
-      // Function to fetch and display all appointments
-      async function loadAllAppointments() {
+      // Function to fetch and display all patients
+      async function loadPatients() {
         try {
           const username = localStorage.getItem("username");
           if (!username) {
@@ -456,40 +456,39 @@
           }
 
           const response = await fetch(
-            `http://localhost:8000/doctor/all-appointments/${username}`
+            `http://localhost:8000/doctor/patients/${username}`
           );
           if (!response.ok) {
-            throw new Error("Failed to fetch appointments");
+            throw new Error("Failed to fetch patients");
           }
 
           const data = await response.json();
-          const tableBody = document.getElementById("appointmentsTableBody");
+          const tableBody = document.getElementById("patientsTableBody");
           tableBody.innerHTML = ""; // Clear existing contents
 
-          if (data.appointments && data.appointments.length > 0) {
-            data.appointments.forEach((appointment) => {
+          if (data.patients && data.patients.length > 0) {
+            data.patients.forEach((patient) => {
               const row = document.createElement("tr");
               row.innerHTML = `
-                <td>${appointment.appointment_id}</td>
-                <td>${appointment.date_time}</td>
-                <td>${appointment.patient_id}</td>
-                <td>${appointment.patient_name}</td>
-                <td><span class="status-badge status-${appointment.status.toLowerCase()}">${
-                appointment.status
-              }</span></td>
+                <td>${patient.patient_id}</td>
+                <td>${patient.name}</td>
+                <td>${patient.email}</td>
+                <td>${patient.phone}</td>
+                <td>${patient.last_visit}</td>
+                <td>${patient.total_visits}</td>
               `;
               tableBody.appendChild(row);
             });
           } else {
             tableBody.innerHTML = `
               <tr>
-                <td colspan="5" style="text-align: center;">No appointments found</td>
+                <td colspan="6" style="text-align: center;">No patients found</td>
               </tr>
             `;
           }
         } catch (error) {
-          console.error("Error loading appointments:", error);
-          alert("Failed to load appointments");
+          console.error("Error loading patients:", error);
+          alert("Failed to load patients");
         }
       }
 
@@ -512,7 +511,7 @@
         localStorage.setItem("theme", "light");
 
         loadDashboardInfo();
-        loadAllAppointments();
+        loadPatients();
       });
     </script>
   </body>
