@@ -299,7 +299,7 @@ def get_appointment_endpoint(appointment_id: int, db: Session = Depends(get_db))
         raise HTTPException(status_code=404, detail="Appointment not found")
     return appointment
 
-@app.post("/admin/appointment", response_model=AdminAppointmentResponse)
+@app.post("/admin/appointment")
 def create_appointment_endpoint(appointment: AppointmentCreate, db: Session = Depends(get_db)):
     try:
         return admin_appointments.create_appointment(db, appointment)

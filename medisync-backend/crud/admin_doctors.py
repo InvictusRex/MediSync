@@ -76,7 +76,7 @@ def format_doctor_id(doctor_id: int) -> str:
     """
     Format doctor ID to display format (e.g., D000001)
     """
-    return f"D{doctor_id:06d}"
+    return f"{doctor_id:05d}"
 
 
 def format_doctor_response(doctor: models.Doctor) -> dict:
@@ -84,7 +84,7 @@ def format_doctor_response(doctor: models.Doctor) -> dict:
     Format doctor data for admin dashboard display
     """
     return {
-        "doctor_id": format_doctor_id(doctor.id),
+        "id": format_doctor_id(doctor.id),
         "name": f"Dr. {doctor.name}",
         "department": doctor.department,
         "email": doctor.email,

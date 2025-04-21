@@ -468,7 +468,7 @@
       // Function to load dashboard header info
       async function loadDashboardInfo() {
         try {
-          const username = localStorage.getItem("username") || "ZhadowNyx";
+          const username = localStorage.getItem("username");
           if (!username) {
             window.location.href = "../index.html";
             return;
